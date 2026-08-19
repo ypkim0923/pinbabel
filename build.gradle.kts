@@ -18,8 +18,10 @@ repositories {
 }
 
 extra["springModulithVersion"] = "2.1.0"
+extra["embabelVersion"] = "1.5.0"
 
 dependencies {
+	implementation("com.embabel.agent:embabel-agent-starter-byok:${property("embabelVersion")}")
 	implementation("org.springframework.boot:spring-boot-h2console")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")

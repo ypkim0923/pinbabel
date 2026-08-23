@@ -27,12 +27,16 @@ class CliProfileIntegrationTest {
 	private PinbabelRunShellCommands runShellCommands;
 
 	@Autowired
+	private PinbabelEvaluationShellCommands evaluationShellCommands;
+
+	@Autowired
 	private Chatbot chatbot;
 
 	@Test
 	void startsWithoutApiKeyAndReplacesGenericChatbot() {
 		assertThat(shellCommands).isNotNull();
 		assertThat(runShellCommands).isNotNull();
+		assertThat(evaluationShellCommands).isNotNull();
 		assertThat(chatbot).isInstanceOf(PinbabelChatbot.class);
 		assertThat(agentPlatform.agents())
 			.anyMatch(agent -> agent.getDescription().contains("stock influencer"));

@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/changes/2026-08-24-000-create-modulith-event-publication-table.yaml
   - include:
       file: db/changelog/changes/2026-08-24-001-create-analysis-run-tables.yaml
+  - include:
+      file: db/changelog/changes/2026-08-24-002-create-evaluation-run-table.yaml

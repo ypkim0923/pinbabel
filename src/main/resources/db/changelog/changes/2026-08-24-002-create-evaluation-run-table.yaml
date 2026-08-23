@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-08-24-002-create-evaluation-run-table
+      author: ypkim
+      changes:
+        - createTable:
+            tableName: evaluation_run
+            columns:
+              - column:
+                  name: evaluation_run_id
+                  type: varchar(36)
+                  constraints: { primaryKey: true, nullable: false }
+              - column:
+                  name: dataset_id
+                  type: varchar(100)
+                  constraints: { nullable: false }
+              - column:
+                  name: dataset_version
+                  type: integer
+                  constraints: { nullable: false }
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints: { nullable: false }
+              - column:
+                  name: started_at
+                  type: timestamp with time zone
+                  constraints: { nullable: false }
+              - column:
+                  name: completed_at
+                  type: timestamp with time zone
+                  constraints: { nullable: false }
+              - column: { name: case_count, type: integer, constraints: { nullable: false } }
+              - column: { name: completed_case_count, type: integer, constraints: { nullable: false } }
+              - column: { name: exact_match_case_count, type: integer, constraints: { nullable: false } }
+              - column: { name: true_positive_count, type: integer, constraints: { nullable: false } }
+              - column: { name: false_positive_count, type: integer, constraints: { nullable: false } }
+              - column: { name: false_negative_count, type: integer, constraints: { nullable: false } }
+              - column: { name: correct_sentiment_count, type: integer, constraints: { nullable: false } }
+              - column: { name: expected_evidence_count, type: integer, constraints: { nullable: false } }
+              - column: { name: matched_evidence_count, type: integer, constraints: { nullable: false } }
+              - column: { name: result_schema_version, type: integer, constraints: { nullable: false } }
+              - column: { name: case_results_json, type: clob, constraints: { nullable: false } }
+        - createIndex:
+            tableName: evaluation_run
+            indexName: idx_evaluation_run_recent
+            columns:
+              - column: { name: created_at, descending: true }
+              - column: { name: evaluation_run_id, descending: true }
+      rollback:
+        - dropTable:
+            tableName: evaluation_run

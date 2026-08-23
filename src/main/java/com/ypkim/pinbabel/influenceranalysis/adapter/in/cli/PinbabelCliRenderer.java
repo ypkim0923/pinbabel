@@ -3,6 +3,8 @@ package com.ypkim.pinbabel.influenceranalysis.adapter.in.cli;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.dto.AnalyzeInfluencerPostsResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunDetailResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunSummaryResource;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.evaluation.dto.EvaluationRunDetailResource;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.evaluation.dto.EvaluationRunSummaryResource;
 import java.util.List;
 import org.jmolecules.architecture.hexagonal.PrimaryAdapter;
 import org.springframework.stereotype.Component;
@@ -88,9 +90,56 @@ public class PinbabelCliRenderer {
 		return result.toString().stripTrailing();
 	}
 
+	public String renderEvaluation(EvaluationRunDetailResource run) {
+		var result = new StringBuilder()
+			.append("evaluationRunId: ").append(run.evaluationRunId()).append('\n')
+			.append("dataset: ").append(run.datasetId()).append(" v").append(run.datasetVersion()).append('\n')
+			.append("cases: ").append(run.completedCaseCount()).append('/').append(run.caseCount()).append('\n')
+			.append("exactMatches: ").append(run.exactMatchCaseCount()).append('\n')
+			.append("instrumentPrecision: ").append(formatScore(run.instrumentPrecision())).append('\n')
+			.append("instrumentRecall: ").append(formatScore(run.instrumentRecall())).append('\n')
+			.append("instrumentF1: ").append(formatScore(run.instrumentF1())).append('\n')
+			.append("sentimentAccuracy: ").append(formatScore(run.sentimentAccuracy())).append('\n')
+			.append("evidenceRecall: ").append(formatScore(run.evidenceRecall())).append('\n');
+		for (var evaluationCase : run.cases()) {
+			result.append("- caseId: ").append(evaluationCase.caseId())
+				.append(", analysisRunId: ").append(evaluationCase.analysisRunId())
+				.append(", status: ").append(evaluationCase.analysisStatus())
+				.append(", exactMatch: ").append(evaluationCase.exactMatch())
+				.append(", instrumentF1: ").append(formatScore(evaluationCase.instrumentF1()))
+				.append(", sentimentAccuracy: ").append(formatScore(evaluationCase.sentimentAccuracy()))
+				.append(", evidenceRecall: ").append(formatScore(evaluationCase.evidenceRecall()));
+			if (!evaluationCase.mismatches().isEmpty()) {
+				result.append(", mismatches: ").append(String.join(", ", evaluationCase.mismatches()));
+			}
+			result.append('\n');
+		}
+		return result.toString().stripTrailing();
+	}
+
+	public String renderRecentEvaluations(List<EvaluationRunSummaryResource> runs) {
+		if (runs.isEmpty()) {
+			return "평가 실행 기록이 없습니다.";
+		}
+		var result = new StringBuilder("recentEvaluations: ").append(runs.size()).append('\n');
+		for (var run : runs) {
+			result.append("- evaluationRunId: ").append(run.evaluationRunId())
+				.append(", dataset: ").append(run.datasetId()).append(" v").append(run.datasetVersion())
+				.append(", createdAt: ").append(run.createdAt())
+				.append(", instrumentF1: ").append(formatScore(run.instrumentF1()))
+				.append(", sentimentAccuracy: ").append(formatScore(run.sentimentAccuracy()))
+				.append('\n');
+		}
+		return result.toString().stripTrailing();
+	}
+
 	private void appendIfPresent(StringBuilder result, String name, Object value) {
 		if (value != null) {
 			result.append(name).append(": ").append(value).append('\n');
 		}
+	}
+
+	private String formatScore(double score) {
+		return "%.4f".formatted(score);
 	}
 }

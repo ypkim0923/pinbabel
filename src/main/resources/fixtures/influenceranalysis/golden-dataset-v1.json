@@ -1,0 +1,27 @@
+{
+  "datasetId": "pinbabel-fixture-sentiment",
+  "version": 1,
+  "cases": [
+    {
+      "caseId": "fixture-full-period",
+      "instruction": "fixture-social의 0007-market-voice가 2026-01-01T00:00:00Z부터 2026-01-03T00:00:00Z까지 작성한 NASDAQ 종목 관련 포스트를 UTC 기준으로 분석해줘",
+      "expectedInstruments": [
+        {
+          "instrumentId": "NASDAQ:NVDA",
+          "sentiment": "POSITIVE",
+          "evidencePostIds": ["post-start", "post-mixed"]
+        },
+        {
+          "instrumentId": "NASDAQ:TSLA",
+          "sentiment": "NEGATIVE",
+          "evidencePostIds": ["post-negative", "post-mixed"]
+        },
+        {
+          "instrumentId": "NASDAQ:MSFT",
+          "sentiment": "NEUTRAL",
+          "evidencePostIds": ["post-neutral"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-08-24-001-create-analysis-run-tables
+      author: ypkim
+      changes:
+        - createTable:
+            tableName: analysis_run
+            columns:
+              - column:
+                  name: run_id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: started_at
+                  type: timestamp with time zone
+              - column:
+                  name: completed_at
+                  type: timestamp with time zone
+              - column:
+                  name: duration_ms
+                  type: bigint
+              - column:
+                  name: embabel_process_id
+                  type: varchar(255)
+              - column:
+                  name: trace_available
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: warning_code
+                  type: varchar(100)
+              - column:
+                  name: outcome_code
+                  type: varchar(100)
+              - column:
+                  name: outcome_summary
+                  type: varchar(500)
+              - column:
+                  name: prompt_tokens
+                  type: bigint
+              - column:
+                  name: completion_tokens
+                  type: bigint
+              - column:
+                  name: cost_usd
+                  type: decimal(19,8)
+              - column:
+                  name: models_json
+                  type: clob
+              - column:
+                  name: report_schema_version
+                  type: integer
+              - column:
+                  name: report_json
+                  type: clob
+        - createIndex:
+            tableName: analysis_run
+            indexName: idx_analysis_run_recent
+            columns:
+              - column:
+                  name: created_at
+                  descending: true
+              - column:
+                  name: run_id
+                  descending: true
+        - createTable:
+            tableName: analysis_run_event
+            columns:
+              - column:
+                  name: run_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: event_sequence
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: event_type
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: occurred_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: process_id
+                  type: varchar(255)
+              - column:
+                  name: action_name
+                  type: varchar(255)
+              - column:
+                  name: tool_name
+                  type: varchar(255)
+              - column:
+                  name: model_name
+                  type: varchar(255)
+              - column:
+                  name: provider_name
+                  type: varchar(255)
+              - column:
+                  name: duration_ms
+                  type: bigint
+              - column:
+                  name: successful
+                  type: boolean
+        - addPrimaryKey:
+            tableName: analysis_run_event
+            columnNames: run_id, event_sequence
+            constraintName: pk_analysis_run_event
+        - addForeignKeyConstraint:
+            baseTableName: analysis_run_event
+            baseColumnNames: run_id
+            referencedTableName: analysis_run
+            referencedColumnNames: run_id
+            constraintName: fk_analysis_run_event_run
+            onDelete: CASCADE
+      rollback:
+        - dropTable:
+            tableName: analysis_run_event
+        - dropTable:
+            tableName: analysis_run

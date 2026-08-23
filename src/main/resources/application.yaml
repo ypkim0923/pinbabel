@@ -1,3 +1,26 @@
 spring:
   application:
     name: pinbabel
+  datasource:
+    url: jdbc:h2:mem:pinbabel;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+pinbabel:
+  analysis-run:
+    max-events: 1000
+
+embabel:
+  agent:
+    shell:
+      web-application-type: servlet
+      interactive:
+        enabled: false
+        history-enabled: false

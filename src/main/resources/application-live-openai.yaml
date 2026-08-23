@@ -1,0 +1,8 @@
+pinbabel:
+  llm:
+    model: gemini-3.6-flash
+    provider: OpenAI-compatible
+
+embabel:
+  models:
+    default-llm: gemini-3.6-flash

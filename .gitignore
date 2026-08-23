@@ -238,4 +238,8 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+# Local environment secrets
+.envrc
+*.swp
+
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,intellij+all,gradle,kotlin

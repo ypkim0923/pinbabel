@@ -226,6 +226,8 @@ SNS, LLM, 시세·종목 기준정보, 검색 엔진과 저장소는 교체 가�
 
 ## 작업 규칙
 
+`docs/solutions/`에는 과거에 해결한 bug, 설계 결정과 workflow 사례가 category별로 정리되어 있으며, YAML frontmatter의 `module`, `tags`, `problem_type`으로 검색할 수 있다. 문서화된 영역을 구현·디버깅하거나 결정을 변경할 때 관련 사례를 찾는 데 유용하다.
+
 - 구현 전에 현재 코드와 공식 Embabel 1.5.x 문서를 확인한다.
 - API, event, schema와 보안 계약을 변경할 때는 호환성 영향을 먼저 보고한다.
 - DB schema 변경은 Liquibase로 관리하고 모든 changeSet의 `author`는 `ypkim`으로 한다.

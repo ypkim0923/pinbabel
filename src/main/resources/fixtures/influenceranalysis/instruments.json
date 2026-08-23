@@ -1,0 +1,30 @@
+[
+  {
+    "instrumentId": "NASDAQ:AAPL",
+    "ticker": "AAPL",
+    "exchange": "NASDAQ",
+    "displayName": "Apple Inc.",
+    "aliases": ["Apple", "애플"]
+  },
+  {
+    "instrumentId": "NASDAQ:MSFT",
+    "ticker": "MSFT",
+    "exchange": "NASDAQ",
+    "displayName": "Microsoft Corporation",
+    "aliases": ["Microsoft", "마이크로소프트"]
+  },
+  {
+    "instrumentId": "NASDAQ:NVDA",
+    "ticker": "NVDA",
+    "exchange": "NASDAQ",
+    "displayName": "NVIDIA Corporation",
+    "aliases": ["NVIDIA", "엔비디아"]
+  },
+  {
+    "instrumentId": "NASDAQ:TSLA",
+    "ticker": "TSLA",
+    "exchange": "NASDAQ",
+    "displayName": "Tesla, Inc.",
+    "aliases": ["Tesla", "테슬라"]
+  }
+]

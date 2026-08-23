@@ -1,0 +1,7 @@
+embabel:
+  agent:
+    shell:
+      web-application-type: none
+      interactive:
+        enabled: true
+        history-enabled: true

@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-08-24-004-create-recent-x-analysis-result-table
+      author: ypkim
+      changes:
+        - createTable:
+            tableName: recent_x_analysis_result
+            columns:
+              - column:
+                  name: run_id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: schema_version
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: result_json
+                  type: clob
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: recent_x_analysis_result
+            baseColumnNames: run_id
+            referencedTableName: analysis_run
+            referencedColumnNames: run_id
+            constraintName: fk_recent_x_analysis_result_run
+            onDelete: CASCADE
+      rollback:
+        - dropTable:
+            tableName: recent_x_analysis_result

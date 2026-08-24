@@ -26,6 +26,26 @@ class AnalysisScopePolicyTest {
 	}
 
 	@Test
+	void acceptsExplicitXInfluencerAnalysis() {
+		var intent = new AnalysisIntent(
+			AnalysisIntent.TaskType.ANALYZE_INFLUENCER_POSTS,
+			"x", "market_voice", "2026-01-01T00:00:00Z", "2026-01-03T00:00:00Z", "UTC", Set.of("NASDAQ")
+		);
+
+		var decision = new AnalysisScopePolicy(Set.of("x")).evaluate(
+			"x의 market_voice가 2026-01-01부터 2026-01-03까지 올린 글을 분석해줘",
+			intent
+		);
+
+		assertThat(decision.status()).isEqualTo(AnalysisScopeDecision.Status.ACCEPTED);
+		assertThat(decision.request().platform()).isEqualTo("x");
+		assertThat(policy.evaluate(
+			"x의 market_voice가 2026-01-01부터 2026-01-03까지 올린 글을 분석해줘",
+			intent
+		).status()).isEqualTo(AnalysisScopeDecision.Status.REJECTED);
+	}
+
+	@Test
 	void rejectsUnrelatedAndInvestmentAdviceRequests() {
 		assertThat(policy.evaluate("오늘 날씨를 알려줘", validIntent()).status())
 			.isEqualTo(AnalysisScopeDecision.Status.REJECTED);
@@ -47,14 +67,14 @@ class AnalysisScopePolicyTest {
 	void rejectsUnsupportedPlatformAndMarket() {
 		var unsupportedPlatform = new AnalysisIntent(
 			AnalysisIntent.TaskType.ANALYZE_INFLUENCER_POSTS,
-			"x", "0007-market-voice", "2026-01-01T00:00:00Z", "2026-01-03T00:00:00Z", "UTC", Set.of("NASDAQ")
+			"stocktwits", "0007-market-voice", "2026-01-01T00:00:00Z", "2026-01-03T00:00:00Z", "UTC", Set.of("NASDAQ")
 		);
 		var unsupportedMarket = new AnalysisIntent(
 			AnalysisIntent.TaskType.ANALYZE_INFLUENCER_POSTS,
 			"fixture-social", "0007-market-voice", "2026-01-01T00:00:00Z", "2026-01-03T00:00:00Z", "UTC", Set.of("NYSE")
 		);
 
-		assertThat(policy.evaluate("x 0007-market-voice 2026-01-01 2026-01-03", unsupportedPlatform).status())
+		assertThat(policy.evaluate("stocktwits 0007-market-voice 2026-01-01 2026-01-03", unsupportedPlatform).status())
 			.isEqualTo(AnalysisScopeDecision.Status.REJECTED);
 		assertThat(policy.evaluate("fixture-social 0007-market-voice 2026-01-01 2026-01-03", unsupportedMarket).status())
 			.isEqualTo(AnalysisScopeDecision.Status.REJECTED);

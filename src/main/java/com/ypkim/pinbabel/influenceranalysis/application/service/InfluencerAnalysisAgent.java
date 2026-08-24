@@ -30,7 +30,7 @@ public class InfluencerAnalysisAgent {
 
 	private final SocialPostSource socialPostSource;
 	private final InstrumentCatalog instrumentCatalog;
-	private final AnalysisScopePolicy scopePolicy = new AnalysisScopePolicy();
+	private final AnalysisScopePolicy scopePolicy;
 	private final InfluencerAnalysisReportService reportService =
 		new InfluencerAnalysisReportService();
 
@@ -40,6 +40,7 @@ public class InfluencerAnalysisAgent {
 	) {
 		this.socialPostSource = socialPostSource;
 		this.instrumentCatalog = instrumentCatalog;
+		this.scopePolicy = new AnalysisScopePolicy(socialPostSource.supportedPlatforms());
 	}
 
 	@Action(
@@ -162,7 +163,7 @@ public class InfluencerAnalysisAgent {
 		InfluencerAnalysisRequest request,
 		CollectedPosts posts
 	) {
-		return InfluencerAnalysisOutcome.completed(reportService.buildEmptyReport(request));
+		return InfluencerAnalysisOutcome.completed(reportService.buildEmptyReport(request, posts));
 	}
 
 	@AchievesGoal(description = "Refuse requests outside stock influencer post analysis")

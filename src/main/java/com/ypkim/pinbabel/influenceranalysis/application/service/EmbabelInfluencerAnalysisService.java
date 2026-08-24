@@ -11,6 +11,7 @@ import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisru
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisCorrelationId;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRunId;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.service.AnalysisScopePolicy;
+import com.ypkim.pinbabel.influenceranalysis.application.domain.service.AnalysisFailurePolicy;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.AnalyzeInfluencerPostsUseCase;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.SubmitInfluencerAnalysisUseCase;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.dto.AnalysisSubmissionResource;
@@ -39,6 +40,7 @@ public class EmbabelInfluencerAnalysisService implements AnalyzeInfluencerPostsU
 	private final AnalysisRunFlightRecorderFactory recorderFactory;
 	private final AnalysisExecutionLauncher executionLauncher;
 	private final Clock clock;
+	private final AnalysisFailurePolicy failurePolicy = new AnalysisFailurePolicy();
 
 	@Autowired
 	public EmbabelInfluencerAnalysisService(
@@ -121,9 +123,10 @@ public class EmbabelInfluencerAnalysisService implements AnalyzeInfluencerPostsU
 		catch (RuntimeException exception) {
 			log.warn("Embabel analysis execution failed: runId={}", run.id().value());
 			applyRecorder(run, recorder);
-			run.fail(now(), "AGENT_EXECUTION_FAILED", "Agent execution failed");
+			var failure = failurePolicy.evaluate(exception);
+			run.fail(now(), failure.outcomeCode(), failure.message());
 			persistBestEffort(run, null);
-			return resource(run, InfluencerAnalysisOutcome.failed("분석 실행 중 오류가 발생했습니다."));
+			return resource(run, InfluencerAnalysisOutcome.failed(failure.message()));
 		}
 		finally {
 			closeRecorder(run, recorder);

@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.jmolecules.ddd.annotation.Service;
 
 @Service
@@ -16,7 +17,6 @@ public final class AnalysisScopePolicy {
 
 	public static final int MAX_INPUT_LENGTH = 4_000;
 
-	private static final Set<String> SUPPORTED_PLATFORMS = Set.of("fixture-social");
 	private static final Set<String> SUPPORTED_MARKETS = Set.of("NASDAQ");
 	private static final Set<String> FORBIDDEN_PHRASES = Set.of(
 		"날씨", "코딩", "레시피", "매수", "매도", "투자 추천", "수익 예측", "가격 예측",
@@ -24,6 +24,17 @@ public final class AnalysisScopePolicy {
 		"price prediction", "return prediction", "ignore previous", "이전 지시", "system prompt",
 		"시스템 프롬프트", "bash", "shell command"
 	);
+	private final Set<String> supportedPlatforms;
+
+	public AnalysisScopePolicy() {
+		this(Set.of("fixture-social"));
+	}
+
+	public AnalysisScopePolicy(Set<String> supportedPlatforms) {
+		this.supportedPlatforms = supportedPlatforms.stream()
+			.map(platform -> platform.toLowerCase(Locale.ROOT))
+			.collect(Collectors.toUnmodifiableSet());
+	}
 
 	public AnalysisScopeDecision evaluate(String userInput, AnalysisIntent intent) {
 		if (userInput == null || userInput.isBlank()) {
@@ -48,12 +59,12 @@ public final class AnalysisScopePolicy {
 		}
 
 		var platform = intent.platform().trim().toLowerCase(Locale.ROOT);
-		if (!SUPPORTED_PLATFORMS.contains(platform)) {
-			return AnalysisScopeDecision.rejected("현재 fixture-social 플랫폼만 분석할 수 있습니다.");
+		if (!supportedPlatforms.contains(platform)) {
+			return AnalysisScopeDecision.rejected("현재 활성화된 SNS 수집 플랫폼만 분석할 수 있습니다.");
 		}
 		var markets = intent.marketCodes().stream()
 			.map(code -> code.toUpperCase(Locale.ROOT))
-			.collect(java.util.stream.Collectors.toUnmodifiableSet());
+			.collect(Collectors.toUnmodifiableSet());
 		if (!SUPPORTED_MARKETS.containsAll(markets)) {
 			return AnalysisScopeDecision.rejected("현재 NASDAQ fixture 시장만 분석할 수 있습니다.");
 		}

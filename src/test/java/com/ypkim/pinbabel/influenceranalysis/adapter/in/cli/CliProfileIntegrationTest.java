@@ -30,6 +30,9 @@ class CliProfileIntegrationTest {
 	private PinbabelEvaluationShellCommands evaluationShellCommands;
 
 	@Autowired
+	private PinbabelDiscoveryShellCommands discoveryShellCommands;
+
+	@Autowired
 	private Chatbot chatbot;
 
 	@Test
@@ -37,6 +40,8 @@ class CliProfileIntegrationTest {
 		assertThat(shellCommands).isNotNull();
 		assertThat(runShellCommands).isNotNull();
 		assertThat(evaluationShellCommands).isNotNull();
+		assertThat(discoveryShellCommands.recommendXAccounts())
+			.contains("@aleabitoreddit", "xApiUsed: false", "llmUsed: false");
 		assertThat(chatbot).isInstanceOf(PinbabelChatbot.class);
 		assertThat(agentPlatform.agents())
 			.anyMatch(agent -> agent.getDescription().contains("stock influencer"));

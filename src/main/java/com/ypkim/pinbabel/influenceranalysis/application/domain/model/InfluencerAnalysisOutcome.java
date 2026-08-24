@@ -7,7 +7,7 @@ public record InfluencerAnalysisOutcome(
 	String disclaimer
 ) {
 
-	private static final String DISCLAIMER =
+	public static final String DISCLAIMER =
 		"This is an automated analysis of public SNS statements and is not investment advice.";
 
 	public static InfluencerAnalysisOutcome completed(InfluencerAnalysisReport report) {

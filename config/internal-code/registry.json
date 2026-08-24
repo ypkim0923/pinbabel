@@ -158,7 +158,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 23 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/CollectedPosts.java", "line": 19 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/CollectedPosts.java", "line": 23 }
     },
     {
       "value": "PIN-IAN-0020",
@@ -166,7 +166,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 24 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/CollectedPosts.java", "line": 25 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/CollectedPosts.java", "line": 29 }
     },
     {
       "value": "PIN-IAN-0021",
@@ -174,7 +174,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 25 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/CollectedPosts.java", "line": 31 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/CollectedPosts.java", "line": 35 }
     },
     {
       "value": "PIN-IAN-0022",
@@ -278,7 +278,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 38 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/service/InfluencerAnalysisReportService.java", "line": 89 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/service/InfluencerAnalysisReportService.java", "line": 110 }
     },
     {
       "value": "PIN-IAN-0035",
@@ -286,7 +286,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 39 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/service/InfluencerAnalysisReportService.java", "line": 104 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/service/InfluencerAnalysisReportService.java", "line": 125 }
     },
     {
       "value": "PIN-IAN-0036",
@@ -294,7 +294,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 40 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/service/InfluencerAnalysisReportService.java", "line": 110 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/service/InfluencerAnalysisReportService.java", "line": 131 }
     },
     {
       "value": "PIN-IAN-0037",
@@ -302,7 +302,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 41 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/service/InfluencerAnalysisReportService.java", "line": 116 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/service/InfluencerAnalysisReportService.java", "line": 137 }
     },
     {
       "value": "PIN-IAN-0038",
@@ -471,6 +471,358 @@
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 62 },
       "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/in/rest/PinbabelApiException.java", "line": 32 }
+    },
+    {
+      "value": "PIN-IAN-0059",
+      "symbol": "InfluencerAnalysisInternalCode.X_BEARER_TOKEN_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 63 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 351 }
+    },
+    {
+      "value": "PIN-IAN-0060",
+      "symbol": "InfluencerAnalysisInternalCode.X_USERNAME_INVALID",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 64 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/XAccountHandle.java", "line": 21 }
+    },
+    {
+      "value": "PIN-IAN-0061",
+      "symbol": "InfluencerAnalysisInternalCode.X_USER_LOOKUP_REQUEST_FAILED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 65 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 132 }
+    },
+    {
+      "value": "PIN-IAN-0062",
+      "symbol": "InfluencerAnalysisInternalCode.X_USER_LOOKUP_INTERRUPTED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 66 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 139 }
+    },
+    {
+      "value": "PIN-IAN-0063",
+      "symbol": "InfluencerAnalysisInternalCode.X_USER_NOT_FOUND",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 67 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 148 }
+    },
+    {
+      "value": "PIN-IAN-0064",
+      "symbol": "InfluencerAnalysisInternalCode.X_TIMELINE_REQUEST_FAILED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 68 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 227 }
+    },
+    {
+      "value": "PIN-IAN-0065",
+      "symbol": "InfluencerAnalysisInternalCode.X_TIMELINE_REQUEST_INTERRUPTED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 69 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 234 }
+    },
+    {
+      "value": "PIN-IAN-0066",
+      "symbol": "InfluencerAnalysisInternalCode.X_API_RESPONSE_REJECTED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 70 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 277 }
+    },
+    {
+      "value": "PIN-IAN-0067",
+      "symbol": "InfluencerAnalysisInternalCode.X_API_RESPONSE_INVALID",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 71 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 294 }
+    },
+    {
+      "value": "PIN-IAN-0068",
+      "symbol": "InfluencerAnalysisInternalCode.X_POST_MAPPING_FAILED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 72 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 319 }
+    },
+    {
+      "value": "PIN-IAN-0069",
+      "symbol": "InfluencerAnalysisInternalCode.X_POST_LIMIT_EXCEEDED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 73 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 342 }
+    },
+    {
+      "value": "PIN-IAN-0070",
+      "symbol": "InfluencerAnalysisInternalCode.X_PAGINATION_CYCLE",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 74 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 192 }
+    },
+    {
+      "value": "PIN-IAN-0071",
+      "symbol": "InfluencerAnalysisInternalCode.X_PAGINATION_LIMIT_EXCEEDED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 75 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 198 }
+    },
+    {
+      "value": "PIN-IAN-0072",
+      "symbol": "InfluencerAnalysisInternalCode.X_API_CONTENT_TYPE_INVALID",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 76 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 284 }
+    },
+    {
+      "value": "PIN-IAN-0073",
+      "symbol": "InfluencerAnalysisInternalCode.X_API_CREDITS_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 77 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 253 }
+    },
+    {
+      "value": "PIN-IAN-0074",
+      "symbol": "InfluencerAnalysisInternalCode.X_API_RATE_LIMITED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 78 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 259 }
+    },
+    {
+      "value": "PIN-IAN-0075",
+      "symbol": "InfluencerAnalysisInternalCode.COLLECTION_WARNINGS_INVALID",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 79 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/CollectedPosts.java", "line": 41 }
+    },
+    {
+      "value": "PIN-IAN-0076",
+      "symbol": "InfluencerAnalysisInternalCode.ANALYSIS_FAILURE_OUTCOME_CODE_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 80 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/AnalysisFailureDecision.java", "line": 13 }
+    },
+    {
+      "value": "PIN-IAN-0077",
+      "symbol": "InfluencerAnalysisInternalCode.ANALYSIS_FAILURE_MESSAGE_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 81 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/AnalysisFailureDecision.java", "line": 19 }
+    },
+    {
+      "value": "PIN-IAN-0078",
+      "symbol": "InfluencerAnalysisInternalCode.X_API_SERVICE_UNAVAILABLE",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 82 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 265 }
+    },
+    {
+      "value": "PIN-IAN-0079",
+      "symbol": "InfluencerAnalysisInternalCode.X_API_ACCESS_DENIED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 83 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/x/XSocialPostSource.java", "line": 271 }
+    },
+    {
+      "value": "PIN-IAN-0080",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_MENTIONS_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 84 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyMentionAssessments.java", "line": 15 }
+    },
+    {
+      "value": "PIN-IAN-0081",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_MENTION_ITEM_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 85 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyMentionAssessments.java", "line": 21 }
+    },
+    {
+      "value": "PIN-IAN-0082",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_MENTION_POST_ID_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 86 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyMentionAssessment.java", "line": 19 }
+    },
+    {
+      "value": "PIN-IAN-0083",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_MENTION_TEXT_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 87 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyMentionAssessment.java", "line": 25 }
+    },
+    {
+      "value": "PIN-IAN-0084",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_MENTION_SENTIMENT_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 88 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyMentionAssessment.java", "line": 31 }
+    },
+    {
+      "value": "PIN-IAN-0085",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_MENTION_RATIONALE_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 89 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyMentionAssessment.java", "line": 37 }
+    },
+    {
+      "value": "PIN-IAN-0086",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_COMPANY_MENTION_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 90 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanySummary.java", "line": 23 }
+    },
+    {
+      "value": "PIN-IAN-0087",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_COMPANY_SENTIMENT_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 91 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanySummary.java", "line": 29 }
+    },
+    {
+      "value": "PIN-IAN-0088",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_COMPANY_COUNTS_INVALID",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 92 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanySummary.java", "line": 35 }
+    },
+    {
+      "value": "PIN-IAN-0089",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_COMPANY_EVIDENCE_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 93 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanySummary.java", "line": 41 }
+    },
+    {
+      "value": "PIN-IAN-0090",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_MENTION_CONFIDENCE_INVALID",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 94 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyMentionAssessment.java", "line": 43 }
+    },
+    {
+      "value": "PIN-IAN-0091",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_EVIDENCE_POST_ID_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 95 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyEvidence.java", "line": 23 }
+    },
+    {
+      "value": "PIN-IAN-0092",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_EVIDENCE_PUBLISHED_AT_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 96 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyEvidence.java", "line": 29 }
+    },
+    {
+      "value": "PIN-IAN-0093",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_EVIDENCE_SOURCE_URL_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 97 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyEvidence.java", "line": 35 }
+    },
+    {
+      "value": "PIN-IAN-0094",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_EVIDENCE_EXCERPT_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 98 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyEvidence.java", "line": 41 }
+    },
+    {
+      "value": "PIN-IAN-0095",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_EVIDENCE_SENTIMENT_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 99 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyEvidence.java", "line": 47 }
+    },
+    {
+      "value": "PIN-IAN-0096",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_EVIDENCE_RATIONALE_REQUIRED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 100 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyEvidence.java", "line": 53 }
+    },
+    {
+      "value": "PIN-IAN-0097",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_EVIDENCE_CONFIDENCE_INVALID",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 101 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/model/RecentCompanyEvidence.java", "line": 59 }
+    },
+    {
+      "value": "PIN-IAN-0098",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_RESULT_SERIALIZATION_FAILED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 102 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/persistence/analysisrun/RecentXAnalysisResultJsonCodec.java", "line": 27 }
+    },
+    {
+      "value": "PIN-IAN-0099",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_RESULT_SCHEMA_UNSUPPORTED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 103 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/persistence/analysisrun/RecentXAnalysisResultJsonCodec.java", "line": 36 }
+    },
+    {
+      "value": "PIN-IAN-0100",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_RESULT_DESERIALIZATION_FAILED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 104 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/persistence/analysisrun/RecentXAnalysisResultJsonCodec.java", "line": 45 }
+    },
+    {
+      "value": "PIN-IAN-0101",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_RESULT_SAVE_FAILED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 105 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/persistence/analysisrun/JpaRecentXAnalysisResultStore.java", "line": 38 }
+    },
+    {
+      "value": "PIN-IAN-0102",
+      "symbol": "InfluencerAnalysisInternalCode.RECENT_RESULT_QUERY_FAILED",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 106 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/persistence/analysisrun/JpaRecentXAnalysisResultStore.java", "line": 56 }
     }
   ]
 }

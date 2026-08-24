@@ -21,6 +21,13 @@
     "aliases": ["NVIDIA", "엔비디아"]
   },
   {
+    "instrumentId": "NASDAQ:GOOGL",
+    "ticker": "GOOGL",
+    "exchange": "NASDAQ",
+    "displayName": "Alphabet Inc.",
+    "aliases": ["Alphabet", "Google", "구글", "알파벳"]
+  },
+  {
     "instrumentId": "NASDAQ:TSLA",
     "ticker": "TSLA",
     "exchange": "NASDAQ",

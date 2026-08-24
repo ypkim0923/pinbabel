@@ -58,8 +58,8 @@ class AnalysisWorkspaceToolsTest {
 	}
 
 	@Test
-	void listPostsReturnsStableMetadataOnlyAndReportsTruncation() {
-		var posts = IntStream.range(0, 60)
+	void listPostsReturnsEveryDomainBoundedPostAsStableMetadata() {
+		var posts = IntStream.range(0, CollectedPosts.MAX_POSTS_PER_RUN)
 			.mapToObj(index -> post("post-%02d".formatted(index), "private-content-" + index))
 			.toList();
 		var workspace = workspace(posts, List.of());
@@ -67,9 +67,9 @@ class AnalysisWorkspaceToolsTest {
 		var result = workspace.listPosts();
 
 		assertThat(result.status()).isEqualTo(AnalysisWorkspaceTools.Status.OK);
-		assertThat(result.totalCount()).isEqualTo(60);
+		assertThat(result.totalCount()).isEqualTo(CollectedPosts.MAX_POSTS_PER_RUN);
 		assertThat(result.items()).hasSize(AnalysisWorkspaceTools.MAX_LIST_ITEMS);
-		assertThat(result.truncated()).isTrue();
+		assertThat(result.truncated()).isFalse();
 		assertThat(result.items()).extracting(AnalysisWorkspaceTools.PostSummary::postId)
 			.containsExactlyElementsOf(posts.stream().limit(AnalysisWorkspaceTools.MAX_LIST_ITEMS)
 				.map(CollectedPost::postId).toList());

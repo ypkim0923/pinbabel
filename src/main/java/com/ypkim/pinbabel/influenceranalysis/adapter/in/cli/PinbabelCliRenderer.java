@@ -5,6 +5,10 @@ import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunSummaryResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.evaluation.dto.EvaluationRunDetailResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.evaluation.dto.EvaluationRunSummaryResource;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.discovery.dto.XStockInfluencerRecommendationsResource;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.discovery.dto.RecentCompanyResource;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.discovery.dto.RecentCompanySentimentResource;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.discovery.dto.RecentMentionedCompaniesResource;
 import java.util.List;
 import org.jmolecules.architecture.hexagonal.PrimaryAdapter;
 import org.springframework.stereotype.Component;
@@ -12,6 +16,48 @@ import org.springframework.stereotype.Component;
 @Component
 @PrimaryAdapter
 public class PinbabelCliRenderer {
+
+	public String renderRecentCompanies(RecentMentionedCompaniesResource resource) {
+		var result = recentAnalysisHeader(
+			resource.status(), resource.message(), resource.account(), resource.analyzedPostCount(),
+			resource.commentsExcluded(), resource.repostsExcluded(), resource.cacheHit(),
+			resource.xApiRequestsThisCall(), resource.llmCallsThisCall(),
+			resource.xApiRequestBudget(), resource.llmCallBudget(), resource.durationMs()
+		);
+		appendCompanies(result, "companies", resource.companies());
+		resource.warnings().forEach(warning -> result.append("warning: ").append(warning).append('\n'));
+		return result.append("disclaimer: ").append(resource.disclaimer()).toString().stripTrailing();
+	}
+
+	public String renderRecentCompanySentiment(RecentCompanySentimentResource resource) {
+		var result = recentAnalysisHeader(
+			resource.status(), resource.message(), resource.account(), resource.analyzedPostCount(),
+			resource.commentsExcluded(), resource.repostsExcluded(), resource.cacheHit(),
+			resource.xApiRequestsThisCall(), resource.llmCallsThisCall(),
+			resource.xApiRequestBudget(), resource.llmCallBudget(), resource.durationMs()
+		);
+		appendCompanies(result, "positiveCompanies", resource.positiveCompanies());
+		appendCompanies(result, "negativeCompanies", resource.negativeCompanies());
+		resource.warnings().forEach(warning -> result.append("warning: ").append(warning).append('\n'));
+		return result.append("disclaimer: ").append(resource.disclaimer()).toString().stripTrailing();
+	}
+
+	public String renderRecommendations(XStockInfluencerRecommendationsResource resource) {
+		var result = new StringBuilder()
+			.append("message: ").append(resource.message()).append('\n')
+			.append("xApiUsed: ").append(resource.xApiUsed()).append('\n')
+			.append("llmUsed: ").append(resource.llmUsed()).append('\n')
+			.append("accounts: ").append(resource.accounts().size()).append('\n');
+		for (var account : resource.accounts()) {
+			result.append("- ").append(account.handle())
+				.append(" (").append(account.displayName()).append(")")
+				.append(", platform: ").append(account.platform())
+				.append(", selectionBasis: ").append(account.selectionBasis())
+				.append(", reason: ").append(account.reason())
+				.append('\n');
+		}
+		return result.toString().stripTrailing();
+	}
 
 	public String render(AnalyzeInfluencerPostsResource resource) {
 		var result = new StringBuilder()
@@ -140,6 +186,65 @@ public class PinbabelCliRenderer {
 		if (value != null) {
 			result.append(name).append(": ").append(value).append('\n');
 		}
+	}
+
+	private StringBuilder recentAnalysisHeader(
+		String status,
+		String message,
+		String account,
+		int analyzedPostCount,
+		boolean commentsExcluded,
+		boolean repostsExcluded,
+		boolean cacheHit,
+		Integer xApiRequestsThisCall,
+		Integer llmCallsThisCall,
+		int xApiRequestBudget,
+		int llmCallBudget,
+		long durationMs
+	) {
+		return new StringBuilder()
+			.append("status: ").append(status).append('\n')
+			.append("message: ").append(message).append('\n')
+			.append("account: ").append(account).append('\n')
+			.append("analyzedPostCount: ").append(analyzedPostCount).append('\n')
+			.append("commentsExcluded: ").append(commentsExcluded).append('\n')
+			.append("repostsExcluded: ").append(repostsExcluded).append('\n')
+			.append("cacheHit: ").append(cacheHit).append('\n')
+			.append("xApiRequestsThisCall: ").append(callCount(xApiRequestsThisCall)).append('\n')
+			.append("llmCallsThisCall: ").append(callCount(llmCallsThisCall)).append('\n')
+			.append("xApiRequestBudget: ").append(xApiRequestBudget).append('\n')
+			.append("llmCallBudget: ").append(llmCallBudget).append('\n')
+			.append("durationMs: ").append(durationMs).append('\n');
+	}
+
+	private void appendCompanies(StringBuilder result, String label, List<RecentCompanyResource> companies) {
+		result.append(label).append(": ").append(companies.size()).append('\n');
+		for (var company : companies) {
+			result.append("- ").append(company.mention())
+				.append(", sentiment: ").append(company.overallSentiment())
+				.append(", positive: ").append(company.positiveCount())
+				.append(", negative: ").append(company.negativeCount())
+				.append(", neutral: ").append(company.neutralCount())
+				.append(", uncertain: ").append(company.uncertainCount())
+				.append(", conflicting: ").append(company.conflicting())
+				.append(", confidence: ").append(formatScore(company.confidence()))
+				.append(", evidencePostIds: ").append(company.evidencePostIds())
+				.append('\n');
+			for (var evidence : company.evidence()) {
+				result.append("  - postId: ").append(evidence.postId())
+					.append(", publishedAt: ").append(evidence.publishedAt())
+					.append(", sourceUrl: ").append(evidence.sourceUrl())
+					.append(", sentiment: ").append(evidence.sentiment())
+					.append(", confidence: ").append(formatScore(evidence.confidence()))
+					.append(", rationale: ").append(evidence.rationale())
+					.append(", excerpt: ").append(evidence.excerpt())
+					.append('\n');
+			}
+		}
+	}
+
+	private String callCount(Integer count) {
+		return count == null ? "unknown" : count.toString();
 	}
 
 	private String formatScore(double score) {

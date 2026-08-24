@@ -17,6 +17,7 @@ import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.InfluencerAnalysisReportResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.dto.AnalysisSubmissionResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.dto.SubmitInfluencerAnalysisCommand;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.dto.AnalysisCapabilitiesResource;
 import io.a2a.spec.DataPart;
 import io.a2a.spec.GetTaskRequest;
 import io.a2a.spec.GetTaskResponse;
@@ -30,20 +31,25 @@ import io.a2a.spec.TextPart;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.ObjectMapper;
 
 class ProtocolAdapterParityTest {
 	private static final String RUN_ID = "0198d1bb-99e0-7000-8000-000000000001";
 	private static final String CORRELATION_ID = "0198d1bb-99e0-7000-8000-000000000002";
-	private static final String INSTRUCTION = "fixture-social의 market_maven을 2025-01-01부터 2025-01-04까지 UTC NASDAQ 분석";
+	private static final String INSTRUCTION =
+		"x의 XDevelopers를 2026-08-22부터 2026-08-24까지 UTC NASDAQ 분석";
 
 	@Test
 	void allAdaptersSubmitTheSameApplicationCommandAndExposeTheSameIdentifiers() {
 		var ports = new RecordingPorts();
 		var rest = new InfluencerAnalysisRestController(ports, ports);
 		var a2ui = new A2UiAnalysisController(ports, ports, new A2UiSnapshotRenderer(new ObjectMapper()));
-		var a2a = new PinbabelA2AAgentCardHandler(ports, ports, "http://127.0.0.1:8080");
+		var a2a = new PinbabelA2AAgentCardHandler(
+			ports, ports, () -> new AnalysisCapabilitiesResource(Set.of("fixture-social")),
+			"http://127.0.0.1:8080"
+		);
 
 		var restResponse = rest.create(new InfluencerAnalysisCreateRequest(INSTRUCTION));
 		var a2uiResponse = a2ui.create(new A2UiAnalysisRequest(INSTRUCTION));
@@ -62,7 +68,10 @@ class ProtocolAdapterParityTest {
 	@Test
 	void a2aCompletedTaskOmitsUnknownInstrumentIdentifiersFromEvidence() {
 		var ports = new RecordingPorts(completedRunWithUnknownInstrumentEvidence());
-		var a2a = new PinbabelA2AAgentCardHandler(ports, ports, "http://127.0.0.1:8080");
+		var a2a = new PinbabelA2AAgentCardHandler(
+			ports, ports, () -> new AnalysisCapabilitiesResource(Set.of("fixture-social")),
+			"http://127.0.0.1:8080"
+		);
 
 		var response = (GetTaskResponse) a2a.handleJsonRpc(
 			new GetTaskRequest("request-2", new TaskQueryParams(RUN_ID, 0))
@@ -76,6 +85,22 @@ class ProtocolAdapterParityTest {
 		assertThat(evidence.getFirst())
 			.containsEntry("sentiment", "UNCERTAIN")
 			.doesNotContainKeys("instrumentId", "ticker");
+	}
+
+	@Test
+	void a2aAgentCardAdvertisesOnlyTheActiveCollectionPlatform() {
+		var ports = new RecordingPorts();
+		var fixtureCard = new PinbabelA2AAgentCardHandler(
+			ports, ports, () -> new AnalysisCapabilitiesResource(Set.of("fixture-social")),
+			"http://127.0.0.1:8080"
+		).agentCard("http", "127.0.0.1", 8080);
+		var xCard = new PinbabelA2AAgentCardHandler(
+			ports, ports, () -> new AnalysisCapabilitiesResource(Set.of("x")),
+			"http://127.0.0.1:8080"
+		).agentCard("http", "127.0.0.1", 8080);
+
+		assertThat(fixtureCard.skills().getFirst().examples().getFirst()).contains("fixture-social").doesNotContain("x의");
+		assertThat(xCard.skills().getFirst().examples().getFirst()).contains("x의").doesNotContain("fixture-social");
 	}
 
 	private static AnalysisRunDetailResource completedRunWithUnknownInstrumentEvidence() {

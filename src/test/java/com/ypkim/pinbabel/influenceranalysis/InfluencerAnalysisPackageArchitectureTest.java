@@ -1,6 +1,7 @@
 package com.ypkim.pinbabel.influenceranalysis;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
@@ -41,6 +42,14 @@ class InfluencerAnalysisPackageArchitectureTest {
 					}
 				}
 			})
+			.check(classesToCheck);
+	}
+
+	@ArchTest
+	static void inboundAdaptersDoNotDependOnOutboundPorts(JavaClasses classesToCheck) {
+		noClasses()
+			.that().resideInAPackage(SLICE_PACKAGE + ".adapter.in..")
+			.should().dependOnClassesThat().resideInAPackage(SLICE_PACKAGE + ".application.port.out..")
 			.check(classesToCheck);
 	}
 

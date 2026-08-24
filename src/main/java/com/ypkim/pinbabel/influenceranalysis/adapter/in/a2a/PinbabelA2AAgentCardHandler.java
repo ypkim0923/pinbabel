@@ -3,6 +3,10 @@ package com.ypkim.pinbabel.influenceranalysis.adapter.in.a2a;
 import com.embabel.agent.a2a.server.AgentCardHandler;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRunId;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.SubmitInfluencerAnalysisUseCase;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.QueryAnalysisCapabilitiesUseCase;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.discovery.QueryRecentXAnalysisUseCase;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.discovery.SubmitRecentXAnalysisUseCase;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.discovery.dto.RecentXAnalysisDetailResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.QueryAnalysisRunsUseCase;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunDetailResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.InfluencerAnalysisReportResource;
@@ -29,8 +33,11 @@ import io.a2a.spec.TextPart;
 import io.a2a.spec.UnsupportedOperationError;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.jmolecules.architecture.hexagonal.PrimaryAdapter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -42,15 +49,55 @@ public class PinbabelA2AAgentCardHandler implements AgentCardHandler {
 	private final SubmitInfluencerAnalysisUseCase submitUseCase;
 	private final QueryAnalysisRunsUseCase queryUseCase;
 	private final String baseUrl;
+	private final Set<String> supportedPlatforms;
+	private final SubmitRecentXAnalysisUseCase submitRecentXUseCase;
+	private final QueryRecentXAnalysisUseCase queryRecentXUseCase;
 
+	@Autowired
 	public PinbabelA2AAgentCardHandler(
 		SubmitInfluencerAnalysisUseCase submitUseCase,
 		QueryAnalysisRunsUseCase queryUseCase,
+		QueryAnalysisCapabilitiesUseCase capabilitiesUseCase,
+		ObjectProvider<SubmitRecentXAnalysisUseCase> submitRecentXUseCase,
+		ObjectProvider<QueryRecentXAnalysisUseCase> queryRecentXUseCase,
 		@Value("${pinbabel.api.base-url:http://127.0.0.1:8080}") String baseUrl
 	) {
 		this.submitUseCase = submitUseCase;
 		this.queryUseCase = queryUseCase;
 		this.baseUrl = baseUrl.replaceAll("/+$", "");
+		this.supportedPlatforms = Set.copyOf(capabilitiesUseCase.capabilities().supportedPlatforms());
+		this.submitRecentXUseCase = submitRecentXUseCase.getIfAvailable();
+		this.queryRecentXUseCase = queryRecentXUseCase.getIfAvailable();
+	}
+
+	public PinbabelA2AAgentCardHandler(
+		SubmitInfluencerAnalysisUseCase submitUseCase,
+		QueryAnalysisRunsUseCase queryUseCase,
+		QueryAnalysisCapabilitiesUseCase capabilitiesUseCase,
+		String baseUrl
+	) {
+		this.submitUseCase = submitUseCase;
+		this.queryUseCase = queryUseCase;
+		this.baseUrl = baseUrl.replaceAll("/+$", "");
+		this.supportedPlatforms = Set.copyOf(capabilitiesUseCase.capabilities().supportedPlatforms());
+		this.submitRecentXUseCase = null;
+		this.queryRecentXUseCase = null;
+	}
+
+	public PinbabelA2AAgentCardHandler(
+		SubmitInfluencerAnalysisUseCase submitUseCase,
+		QueryAnalysisRunsUseCase queryUseCase,
+		QueryAnalysisCapabilitiesUseCase capabilitiesUseCase,
+		SubmitRecentXAnalysisUseCase submitRecentXUseCase,
+		QueryRecentXAnalysisUseCase queryRecentXUseCase,
+		String baseUrl
+	) {
+		this.submitUseCase = submitUseCase;
+		this.queryUseCase = queryUseCase;
+		this.baseUrl = baseUrl.replaceAll("/+$", "");
+		this.supportedPlatforms = Set.copyOf(capabilitiesUseCase.capabilities().supportedPlatforms());
+		this.submitRecentXUseCase = submitRecentXUseCase;
+		this.queryRecentXUseCase = queryRecentXUseCase;
 	}
 
 	@Override
@@ -65,10 +112,23 @@ public class PinbabelA2AAgentCardHandler implements AgentCardHandler {
 			.name("주식 인플루언서 SNS 종목 평가 분석")
 			.description("특정 기간의 공개 SNS 포스트에서 종목별 긍정·부정·중립·판단 불가 평가를 분석합니다.")
 			.tags(List.of("stocks", "social-media", "sentiment"))
-			.examples(List.of("fixture-social의 market_maven을 2025-01-01부터 2025-01-04까지 UTC 기준으로 NASDAQ 분석해줘"))
+			.examples(examples())
 			.inputModes(List.of("text/plain"))
 			.outputModes(List.of("application/json", "text/plain"))
 			.build();
+		var skills = new java.util.ArrayList<AgentSkill>();
+		skills.add(skill);
+		if (supportedPlatforms.contains("x") && submitRecentXUseCase != null) {
+			skills.add(new AgentSkill.Builder()
+				.id("analyze-recent-x-companies")
+				.name("최근 X 회사·감정 분석")
+				.description("계정의 답글·재게시를 제외한 최근 포스트 최대 10개에서 회사 표현과 감정을 분석합니다.")
+				.tags(List.of("x", "stocks", "sentiment", "recent-posts"))
+				.examples(List.of("DataPart: {\"operation\":\"analyzeRecentXCompanies\",\"account\":\"@aleabitoreddit\"}"))
+				.inputModes(List.of("application/json"))
+				.outputModes(List.of("application/json"))
+				.build());
+		}
 		return new AgentCard.Builder()
 			.name("Pinbabel")
 			.description("주식 인플루언서 공개 SNS 종목 평가 분석 Agent")
@@ -80,8 +140,19 @@ public class PinbabelA2AAgentCardHandler implements AgentCardHandler {
 				.streaming(false).pushNotifications(false).stateTransitionHistory(false).build())
 			.defaultInputModes(List.of("text/plain"))
 			.defaultOutputModes(List.of("application/json", "text/plain"))
-			.skills(List.of(skill))
+			.skills(List.copyOf(skills))
 			.build();
+	}
+
+	private List<String> examples() {
+		if (supportedPlatforms.contains("x")) {
+			return List.of(
+				"x의 XDevelopers를 2026-08-22T00:00:00Z부터 2026-08-24T00:00:00Z까지 UTC 기준으로 NASDAQ 분석해줘"
+			);
+		}
+		return List.of(
+			"fixture-social의 market_maven을 2025-01-01T00:00:00Z부터 2025-01-04T00:00:00Z까지 UTC 기준으로 NASDAQ 분석해줘"
+		);
 	}
 
 	@Override
@@ -106,20 +177,40 @@ public class PinbabelA2AAgentCardHandler implements AgentCardHandler {
 
 	private JSONRPCResponse<?> sendMessage(SendMessageRequest request) {
 		var message = request.getParams() == null ? null : request.getParams().message();
-		if (message == null || message.getTaskId() != null || message.getParts() == null || message.getParts().size() != 1
-			|| !(message.getParts().getFirst() instanceof TextPart textPart) || textPart.getText().isBlank()) {
+		if (message == null || message.getTaskId() != null || message.getParts() == null || message.getParts().size() != 1) {
 			return new SendMessageResponse(request.getId(), new InvalidParamsError(
-				"A new task requires exactly one non-blank text part and no taskId"
+				"A new task requires exactly one part and no taskId"
 			));
 		}
+		if (message.getParts().getFirst() instanceof DataPart dataPart) {
+			return sendRecentXMessage(request, dataPart);
+		}
+		if (!(message.getParts().getFirst() instanceof TextPart textPart) || textPart.getText().isBlank()) {
+			return new SendMessageResponse(request.getId(), new InvalidParamsError("Text input must not be blank"));
+		}
 		var submission = submitUseCase.submit(new SubmitInfluencerAnalysisCommand(textPart.getText()));
-		var task = new Task.Builder()
+		return new SendMessageResponse(request.getId(), submittedTask(submission));
+	}
+
+	private JSONRPCResponse<?> sendRecentXMessage(SendMessageRequest request, DataPart dataPart) {
+		var data = dataPart.getData();
+		if (submitRecentXUseCase == null || data == null
+			|| !"analyzeRecentXCompanies".equals(data.get("operation"))
+			|| !(data.get("account") instanceof String account) || account.isBlank() || account.length() > 16) {
+			return new SendMessageResponse(request.getId(), new InvalidParamsError(
+				"Recent X input requires operation=analyzeRecentXCompanies and a non-blank account"
+			));
+		}
+		return new SendMessageResponse(request.getId(), submittedTask(submitRecentXUseCase.submit(account)));
+	}
+
+	private Task submittedTask(com.ypkim.pinbabel.influenceranalysis.application.port.in.dto.AnalysisSubmissionResource submission) {
+		return new Task.Builder()
 			.id(submission.runId())
 			.contextId(submission.correlationId())
 			.status(new TaskStatus(toState(submission.status())))
 			.metadata(metadata(submission.outcomeCode(), submission.outcomeSummary()))
 			.build();
-		return new SendMessageResponse(request.getId(), task);
 	}
 
 	private JSONRPCResponse<?> getTask(GetTaskRequest request) {
@@ -128,12 +219,71 @@ public class PinbabelA2AAgentCardHandler implements AgentCardHandler {
 		}
 		try {
 			var runId = new AnalysisRunId(request.getParams().id());
+			if (queryRecentXUseCase != null) {
+				var recent = queryRecentXUseCase.findRecentRun(runId);
+				if (recent.isPresent()) {
+					return new GetTaskResponse(request.getId(), recentTask(recent.orElseThrow()));
+				}
+			}
 			return queryUseCase.findRun(runId)
 				.<JSONRPCResponse<?>>map(run -> new GetTaskResponse(request.getId(), task(run)))
 				.orElseGet(() -> new GetTaskResponse(request.getId(), new TaskNotFoundError()));
 		} catch (IllegalArgumentException exception) {
 			return new GetTaskResponse(request.getId(), new TaskNotFoundError());
 		}
+	}
+
+	private Task recentTask(RecentXAnalysisDetailResource run) {
+		var builder = new Task.Builder()
+			.id(run.runId())
+			.contextId(run.correlationId())
+			.status(new TaskStatus(toState(run.status())))
+			.metadata(metadata(run.outcomeCode(), run.outcomeSummary()));
+		if ("COMPLETED".equals(run.status()) || "FAILED".equals(run.status()) || "REJECTED".equals(run.status())) {
+			builder.artifacts(List.of(new Artifact.Builder()
+				.artifactId("recent-x-analysis-" + run.runId())
+				.name("recent-x-company-analysis")
+				.description("최근 X 포스트의 회사 표현, 감정, 근거와 비용 상한")
+				.parts(new DataPart(recentResultData(run)))
+				.build()));
+		}
+		return builder.build();
+	}
+
+	private Map<String, Object> recentResultData(RecentXAnalysisDetailResource run) {
+		var result = run.result();
+		var data = new java.util.LinkedHashMap<String, Object>();
+		data.put("account", result.account());
+		data.put("analyzedPostCount", result.analyzedPostCount());
+		data.put("commentsExcluded", result.commentsExcluded());
+		data.put("repostsExcluded", result.repostsExcluded());
+		data.put("cacheHit", result.cacheHit());
+		if (result.xApiRequestsThisCall() != null) data.put("xApiRequestsThisCall", result.xApiRequestsThisCall());
+		if (result.llmCallsThisCall() != null) data.put("llmCallsThisCall", result.llmCallsThisCall());
+		data.put("xApiRequestBudget", result.xApiRequestBudget());
+		data.put("llmCallBudget", result.llmCallBudget());
+		data.put("companies", result.companies().stream().map(company -> Map.<String, Object>of(
+			"mention", company.mention(),
+			"overallSentiment", company.overallSentiment(),
+			"positiveCount", company.positiveCount(),
+			"negativeCount", company.negativeCount(),
+			"neutralCount", company.neutralCount(),
+			"uncertainCount", company.uncertainCount(),
+			"conflicting", company.conflicting(),
+			"confidence", company.confidence(),
+			"evidence", company.evidence().stream().map(evidence -> Map.<String, Object>of(
+				"postId", evidence.postId(),
+				"publishedAt", evidence.publishedAt().toString(),
+				"sourceUrl", evidence.sourceUrl().toString(),
+				"excerpt", evidence.excerpt(),
+				"sentiment", evidence.sentiment(),
+				"rationale", evidence.rationale(),
+				"confidence", evidence.confidence()
+			)).toList()
+		)).toList());
+		data.put("warnings", result.warnings());
+		data.put("disclaimer", result.disclaimer());
+		return Map.copyOf(data);
 	}
 
 	private Task task(AnalysisRunDetailResource run) {

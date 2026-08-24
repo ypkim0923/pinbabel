@@ -9,9 +9,13 @@ import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 
 @AggregateRoot
-public record CollectedPosts(List<CollectedPost> posts) {
+public record CollectedPosts(List<CollectedPost> posts, List<String> warnings) {
 
-	public static final int MAX_POSTS_PER_RUN = 100;
+	public static final int MAX_POSTS_PER_RUN = 50;
+
+	public CollectedPosts(List<CollectedPost> posts) {
+		this(posts, List.of());
+	}
 
 	public CollectedPosts {
 		if (posts == null) {
@@ -32,7 +36,14 @@ public record CollectedPosts(List<CollectedPost> posts) {
 				"Collected posts exceed the per-run limit"
 			);
 		}
+		if (warnings == null || warnings.stream().anyMatch(warning -> warning == null || warning.isBlank())) {
+			throw new InfluencerAnalysisException(
+				InfluencerAnalysisInternalCode.COLLECTION_WARNINGS_INVALID,
+				"Collection warnings must be a non-null list of non-blank values"
+			);
+		}
 		posts = List.copyOf(posts);
+		warnings = List.copyOf(warnings);
 	}
 
 	public boolean isEmpty() {

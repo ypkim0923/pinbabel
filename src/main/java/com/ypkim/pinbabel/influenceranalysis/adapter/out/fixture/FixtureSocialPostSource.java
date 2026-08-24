@@ -24,7 +24,7 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 @Component
-@Profile("fixture")
+@Profile("fixture & !x")
 @SecondaryAdapter
 public class FixtureSocialPostSource implements SocialPostSource {
 

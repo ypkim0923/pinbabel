@@ -50,15 +50,39 @@ class InfluencerAnalysisReportServiceTest {
 			assertThat(evidence.postId()).isEqualTo(post.postId());
 			assertThat(evidence.source()).isEqualTo("pinbabel-fixture");
 		});
+		assertThat(report.warnings()).contains("ANALYSIS_LIMITED_TO_COLLECTED_FIXTURE_POSTS");
+		assertThat(report.disclaimer())
+			.isEqualTo("This report summarizes fixture posts for testing and is not investment advice.");
 	}
 
 	@Test
 	void buildsNoPostsReportWithoutAssessments() {
-		var report = service.buildEmptyReport(request());
+		var report = service.buildEmptyReport(request(), new CollectedPosts(List.of()));
 
 		assertThat(report.instrumentSummaries()).isEmpty();
 		assertThat(report.evidence()).isEmpty();
 		assertThat(report.warnings()).containsExactly("NO_POSTS");
+	}
+
+	@Test
+	void carriesCollectionWarningsIntoCompletedAndEmptyReports() {
+		var collectionWarning = "X_API_PARTIAL_RESPONSE";
+		var post = post();
+		var instrument = instrument();
+		var assessments = new PostAssessments(List.of(
+			new PostAssessment(post.postId(), instrument.instrumentId(), "NVDA", Sentiment.POSITIVE, "Strong")
+		));
+		var collected = new CollectedPosts(List.of(post), List.of(collectionWarning));
+
+		var completed = service.buildReport(
+			request(), collected, assessments, Map.of(instrument.instrumentId(), instrument)
+		);
+		var empty = service.buildEmptyReport(
+			request(), new CollectedPosts(List.of(), List.of(collectionWarning))
+		);
+
+		assertThat(completed.warnings()).contains(collectionWarning);
+		assertThat(empty.warnings()).containsExactly(collectionWarning, "NO_POSTS");
 	}
 
 	@Test

@@ -2,10 +2,38 @@ openapi: 3.1.0
 info:
   title: Pinbabel Local Experiment API
   version: 1.0.0
-  description: Local-only REST and A2UI transport contracts. Start with the fixture and api profiles.
+  description: Local-only REST and A2UI transport contracts. Use fixture,api or fixture,x,api profiles.
 servers:
   - url: http://127.0.0.1:8080
 paths:
+  /api/v1/x-influencer-analyses:
+    post:
+      summary: Submit a recent X company sentiment analysis
+      description: Analyzes at most 10 original or quoted posts, excluding replies and reposts.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RecentXAnalysisRequest'}
+      responses:
+        '202': {description: Accepted, headers: {Location: {schema: {type: string}}}}
+        '400': {description: Rejected or invalid request}
+        '413': {description: Request body exceeds 16 KiB}
+        '429': {description: Execution capacity exhausted}
+  /api/v1/x-influencer-analyses/{runId}:
+    get:
+      summary: Get a recent X company sentiment analysis
+      security: []
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200': {description: Current operation state and versioned result artifact}
+        '400': {description: Invalid run ID}
+        '404': {description: Run not found or not a recent X analysis}
   /api/v1/influencer-analyses:
     post:
       summary: Submit an influencer analysis
@@ -59,8 +87,43 @@ paths:
         '200':
           description: Three ordered A2UI JSON Lines messages
           content: {application/x-ndjson: {schema: {type: string}}}
+  /a2ui/v0.9/x-influencer-analyses:
+    post:
+      summary: Submit a recent X analysis and receive an A2UI v0.9 snapshot
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RecentXAnalysisRequest'}
+      responses:
+        '202':
+          description: A2UI JSON Lines snapshot
+          content: {application/x-ndjson: {schema: {type: string}}}
+  /a2ui/v0.9/x-influencer-analyses/{runId}:
+    get:
+      summary: Get the current recent X A2UI v0.9 snapshot
+      security: []
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200':
+          description: Three ordered A2UI JSON Lines messages
+          content: {application/x-ndjson: {schema: {type: string}}}
 components:
   schemas:
+    RecentXAnalysisRequest:
+      type: object
+      additionalProperties: false
+      required: [account]
+      properties:
+        account:
+          type: string
+          pattern: '^@?[A-Za-z0-9_]{1,15}$'
+          examples: ['@aleabitoreddit']
     AnalysisRequest:
       type: object
       additionalProperties: false

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="profileList" class="directory-content">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">CURATED DIRECTORY</p>
+      <h2>관찰할 계정</h2>
+    </div>
+    <p th:text="${directory.message}">실험용 추천 목록입니다.</p>
+  </div>
+  <div class="profile-grid">
+    <article class="profile-card"
+             th:each="profile, stat : ${directory.profiles}"
+             th:style="'--entry-index:' + ${stat.index}">
+      <a th:href="@{/influencers/{id}(id=${profile.profileId})}" href="#">
+        <div class="profile-card-top">
+          <span class="avatar" th:classappend="' avatar--' + ${profile.avatarColor}" th:text="${profile.avatarInitials}">SE</span>
+          <span class="source-badge" th:classappend="${profile.live} ? ' source-badge--live' : ''" th:text="${profile.sourceLabel}">Fixture</span>
+        </div>
+        <div class="profile-card-copy">
+          <h3 th:text="${profile.displayName}">Serenity</h3>
+          <p class="handle" th:text="${profile.handle}">@handle</p>
+          <p class="profile-description" th:text="${profile.description}">계정 설명</p>
+        </div>
+        <div class="profile-card-footer">
+          <span th:text="${profile.investmentStyle}">투자 관점</span>
+          <span aria-hidden="true">↗</span>
+        </div>
+      </a>
+    </article>
+  </div>
+</div>
+</body>
+</html>

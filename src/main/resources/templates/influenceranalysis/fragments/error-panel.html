@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="errorPanel" id="analysis-panel" class="error-panel" role="alert">
+  <p class="eyebrow" th:text="${errorStatus}">400</p>
+  <h2 th:text="${errorTitle}">요청을 확인해 주세요</h2>
+  <p th:text="${errorMessage}">오류 메시지</p>
+  <small th:text="'참조: ' + ${errorReference}">참조</small>
+  <a th:href="@{/influencers}">계정 목록으로</a>
+</section>
+</body>
+</html>

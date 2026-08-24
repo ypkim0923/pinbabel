@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>요청 오류 · Pinbabel</title>
+  <link rel="stylesheet" th:href="@{/css/pinbabel.css}" href="/css/pinbabel.css">
+</head>
+<body>
+<header class="site-header"><a class="brand" th:href="@{/}"><span class="brand-mark">P</span><span>PINBABEL</span></a></header>
+<main class="error-main">
+  <div th:replace="~{influenceranalysis/fragments/error-panel :: errorPanel}"></div>
+</main>
+</body>
+</html>

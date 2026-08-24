@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${page.profile.displayName} + ' · Pinbabel'">Profile · Pinbabel</title>
+  <link rel="stylesheet" th:href="@{/css/pinbabel.css}" href="/css/pinbabel.css">
+  <script defer th:src="@{/vendor/htmx/htmx-2.0.10.min.js}" src="/vendor/htmx/htmx-2.0.10.min.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" th:href="@{/}" href="/" aria-label="Pinbabel 처음으로">
+    <span class="brand-mark" aria-hidden="true">P</span><span>PINBABEL</span>
+  </a>
+  <a class="back-link" th:href="@{/influencers}" href="/influencers">← 계정 목록</a>
+</header>
+
+<main class="detail-main">
+  <section class="profile-hero" aria-labelledby="profile-title">
+    <div class="profile-identity">
+      <span class="avatar avatar--large" th:classappend="' avatar--' + ${page.profile.avatarColor}" th:text="${page.profile.avatarInitials}">SE</span>
+      <div>
+        <div class="profile-meta-line">
+          <span class="source-badge" th:classappend="${page.profile.live} ? ' source-badge--live' : ''" th:text="${page.profile.sourceLabel}">Fixture</span>
+          <span th:text="${page.profile.investmentStyle}">투자 관점</span>
+        </div>
+        <h1 id="profile-title" th:text="${page.profile.displayName}">Serenity</h1>
+        <p class="handle" th:text="${page.profile.handle}">@handle</p>
+      </div>
+    </div>
+    <p class="profile-lede" th:text="${page.profile.description}">프로필 설명</p>
+  </section>
+
+  <section th:if="${page.profile.live and page.analysis == null}" class="live-launch" aria-labelledby="live-launch-title">
+    <div>
+      <p class="eyebrow">LIVE EXPERIMENT</p>
+      <h2 id="live-launch-title">최근 포스트 10개 분석</h2>
+      <p th:text="${page.liveSetupGuidance}">설정 안내</p>
+    </div>
+    <form th:if="${page.liveAnalysisEnabled}"
+          th:action="@{/influencers/{id}/analyses(id=${page.profile.profileId})}" method="post"
+          th:attr="hx-post=@{/influencers/{id}/analyses(id=${page.profile.profileId})}"
+          hx-target="#analysis-panel" hx-swap="outerHTML" hx-disabled-elt="button" hx-sync="this:drop">
+      <input type="hidden" name="executionToken" th:value="${page.executionToken}">
+      <button type="submit" class="primary-action primary-action--button">
+        분석 실행 <span aria-hidden="true">→</span>
+      </button>
+      <small>X API 최대 2회 · LLM 최대 1회</small>
+    </form>
+    <div th:unless="${page.liveAnalysisEnabled}" class="setup-state">실행 설정이 준비되면 버튼이 활성화됩니다.</div>
+  </section>
+
+  <section id="analysis-panel" th:if="${page.analysis == null}" class="analysis-placeholder" aria-live="polite">
+    <span class="status-dot"></span>
+    <p>분석을 실행하면 이 영역에 진행 상태와 회사별 결과가 표시됩니다.</p>
+  </section>
+  <th:block th:if="${page.analysis != null}">
+    <div th:replace="~{influenceranalysis/fragments/analysis-panel :: analysisPanel}"></div>
+  </th:block>
+
+  <aside class="disclaimer">
+    <strong>NOTICE</strong>
+    <p th:text="${page.disclaimer}">공개 SNS 발언에 대한 자동 분석이며 투자 자문이 아닙니다.</p>
+  </aside>
+</main>
+</body>
+</html>

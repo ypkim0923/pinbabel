@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="analysisPanel"
+         id="analysis-panel"
+         class="analysis-workspace"
+         aria-live="polite"
+         th:attr="hx-get=${page.analysis.automaticPolling ? '/influencers/' + page.profile.profileId + '/analyses/' + page.analysis.runId : null},
+                  hx-trigger=${page.analysis.automaticPolling ? 'load delay:2s' : null},
+                  hx-swap=${page.analysis.automaticPolling ? 'outerHTML' : null}">
+  <header class="analysis-header">
+    <div>
+      <p class="eyebrow">RECENT POST ANALYSIS</p>
+      <h2>회사 평가 지도</h2>
+    </div>
+    <div class="analysis-status" th:classappend="' analysis-status--' + ${#strings.toLowerCase(page.analysis.status)}">
+      <span class="status-dot"></span>
+      <span th:text="${page.analysis.statusLabel}">완료</span>
+    </div>
+  </header>
+
+  <p class="analysis-message" th:text="${page.analysis.message}">분석 메시지</p>
+
+  <div th:if="${page.analysis.automaticPolling}" class="progress-line" role="status">
+    <span></span><p>Embabel 실행 상태를 2초 간격으로 확인하고 있습니다.</p>
+  </div>
+  <div th:if="${page.analysis.pollingBudgetExceeded}" class="recovery-note">
+    <strong>자동 조회를 멈췄습니다.</strong>
+    <p>실행은 계속될 수 있습니다. 유료 분석을 다시 접수하지 말고 현재 run 상태만 확인하세요.</p>
+    <a th:href="@{/influencers/{profileId}/analyses/{runId}(profileId=${page.profile.profileId},runId=${page.analysis.runId})}">상태 다시 확인</a>
+  </div>
+  <div th:if="${page.analysis.recoveryGuidance != null}" class="recovery-note recovery-note--error">
+    <strong>복구 안내</strong>
+    <p th:text="${page.analysis.recoveryGuidance}">복구 안내</p>
+    <form th:if="${page.analysis.retryAllowed and page.executionToken != null}"
+          th:action="@{/influencers/{id}/analyses(id=${page.profile.profileId})}" method="post"
+          th:attr="hx-post=@{/influencers/{id}/analyses(id=${page.profile.profileId})}"
+          hx-target="#analysis-panel" hx-swap="outerHTML" hx-disabled-elt="button" hx-sync="this:drop">
+      <input type="hidden" name="executionToken" th:value="${page.executionToken}">
+      <button type="submit" class="text-action">한 번 다시 실행</button>
+    </form>
+  </div>
+
+  <div th:if="${page.analysis.terminal and page.analysis.status == 'COMPLETED'}" class="sentiment-grid">
+    <section th:each="section : ${page.analysis.sections}"
+             class="sentiment-section"
+             th:classappend="' sentiment-section--' + ${#strings.toLowerCase(section.code)}"
+             th:attr="aria-labelledby='sentiment-' + ${#strings.toLowerCase(section.code)}">
+      <header>
+        <h3 th:id="'sentiment-' + ${#strings.toLowerCase(section.code)}" th:text="${section.label}">긍정</h3>
+        <span th:text="${section.companies.size()}">0</span>
+      </header>
+      <p th:if="${section.companies.empty}" class="empty-result" th:text="${section.emptyMessage}">결과 없음</p>
+      <article th:each="company : ${section.companies}" class="company-row">
+        <div class="company-summary">
+          <div>
+            <h4 th:text="${company.name}">Microsoft</h4>
+            <p><span th:text="${company.mentionCount}">1</span>회 언급 · 신뢰도 <span th:text="${company.confidencePercent}">90</span>%</p>
+          </div>
+          <span th:if="${company.conflicting}" class="conflict-label">의견 충돌</span>
+        </div>
+        <details>
+          <summary>근거 <span th:text="${company.evidence.size()}">1</span>건 보기</summary>
+          <div th:each="evidence : ${company.evidence}" class="evidence">
+            <div class="evidence-meta">
+              <span th:text="${evidence.publishedAt}">2026-08-24</span>
+              <span th:text="${evidence.sentiment}">POSITIVE</span>
+              <span th:text="${evidence.confidencePercent} + '%'">90%</span>
+            </div>
+            <blockquote th:text="${evidence.excerpt}">원문 발췌</blockquote>
+            <p th:text="${evidence.rationale}">판단 이유</p>
+            <a th:if="${evidence.externalLink}" th:href="${evidence.sourceUrl}" target="_blank" rel="noopener noreferrer" th:text="${evidence.sourceLabel}">X 원문 열기</a>
+            <span th:unless="${evidence.externalLink}" class="fixture-reference" th:text="${evidence.sourceLabel} + ' · ' + ${evidence.postId}">Fixture 원문</span>
+          </div>
+        </details>
+      </article>
+    </section>
+  </div>
+
+  <details class="experiment-details">
+    <summary>실험 정보</summary>
+    <dl>
+      <div><dt>실행 참조</dt><dd th:text="${page.analysis.runReference}">fixture:id:v1</dd></div>
+      <div><dt>상태</dt><dd th:text="${page.analysis.status}">COMPLETED</dd></div>
+      <div><dt>분석 포스트</dt><dd th:text="${page.analysis.experiment.analyzedPostCount}">10</dd></div>
+      <div><dt>X API</dt><dd th:text="${page.analysis.experiment.xApiCalls} + ' / ' + ${page.analysis.experiment.xApiBudget}">0 / 0</dd></div>
+      <div><dt>LLM</dt><dd th:text="${page.analysis.experiment.llmCalls} + ' / ' + ${page.analysis.experiment.llmBudget}">0 / 0</dd></div>
+      <div><dt>실행 시간</dt><dd th:text="${page.analysis.experiment.durationMs} + ' ms'">0 ms</dd></div>
+      <div><dt>데이터</dt><dd th:text="${page.analysis.experiment.fixture ? 'Fixture' : (page.analysis.experiment.cacheHit ? '15분 캐시' : 'Live')}">Fixture</dd></div>
+    </dl>
+    <ul th:if="${!page.analysis.experiment.warnings.empty}" class="warning-list">
+      <li th:each="warning : ${page.analysis.experiment.warnings}" th:text="${warning}">warning</li>
+    </ul>
+  </details>
+</section>
+</body>
+</html>

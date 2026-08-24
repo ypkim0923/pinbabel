@@ -12,6 +12,18 @@ import org.springframework.mock.env.MockEnvironment;
 class LiveLlmConfigurationTest {
 
 	@Test
+	void createsModelWithoutContactingProviderAtStartup() {
+		var environment = new MockEnvironment()
+			.withProperty("OPENAI_API_KEY", "test-secret")
+			.withProperty("OPENAI_BASE_URL", "https://127.0.0.1:1/v1");
+
+		var llmService = new LiveLlmConfiguration()
+			.pinbabelOpenAiLlm(environment, "test-model", "OpenAI-compatible");
+
+		assertThat(llmService).isNotNull();
+	}
+
+	@Test
 	void readsKeyAndHttpsBaseUrlFromEnvironment() {
 		var environment = new MockEnvironment()
 			.withProperty("OPENAI_API_KEY", "test-secret")

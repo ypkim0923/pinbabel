@@ -2,10 +2,14 @@ package com.ypkim.pinbabel.influenceranalysis.adapter.out.llm;
 
 import com.embabel.agent.openai.OpenAiCompatibleModelFactory;
 import com.embabel.agent.spi.LlmService;
+import com.embabel.common.ai.model.PricingModel;
+import com.embabel.common.util.ObjectProviders;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.error.InfluencerAnalysisException;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.error.InfluencerAnalysisInternalCode;
+import io.micrometer.observation.ObservationRegistry;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 import org.jmolecules.architecture.hexagonal.SecondaryAdapter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,12 +30,21 @@ public class LiveLlmConfiguration {
 	) {
 		var settings = settingsFrom(environment, model, provider);
 		try {
-			return OpenAiCompatibleModelFactory.Companion.byok(
+			return new OpenAiCompatibleModelFactory(
 				settings.baseUrl().toString(),
 				settings.apiKey(),
+				null,
+				null,
+				Map.of(),
+				ObservationRegistry.NOOP,
+				ObjectProviders.INSTANCE.empty(),
+				ObjectProviders.INSTANCE.empty()
+			).openAiCompatibleLlm(
 				settings.model(),
-				settings.provider()
-			).buildValidated();
+				PricingModel.getALL_YOU_CAN_EAT(),
+				settings.provider(),
+				null
+			);
 		} catch (RuntimeException exception) {
 			throw new InfluencerAnalysisException(
 				InfluencerAnalysisInternalCode.LLM_VALIDATION_FAILED,

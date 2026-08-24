@@ -310,7 +310,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 42 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/llm/LiveLlmConfiguration.java", "line": 47 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/llm/LiveLlmConfiguration.java", "line": 60 }
     },
     {
       "value": "PIN-IAN-0039",
@@ -318,7 +318,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 43 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/llm/LiveLlmConfiguration.java", "line": 54 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/llm/LiveLlmConfiguration.java", "line": 67 }
     },
     {
       "value": "PIN-IAN-0040",
@@ -326,7 +326,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 44 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/llm/LiveLlmConfiguration.java", "line": 79 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/llm/LiveLlmConfiguration.java", "line": 92 }
     },
     {
       "value": "PIN-IAN-0041",
@@ -334,7 +334,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 45 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/llm/LiveLlmConfiguration.java", "line": 37 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/llm/LiveLlmConfiguration.java", "line": 50 }
     },
     {
       "value": "PIN-IAN-0042",

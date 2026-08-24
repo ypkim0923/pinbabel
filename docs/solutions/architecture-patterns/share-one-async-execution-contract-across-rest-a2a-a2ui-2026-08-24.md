@@ -35,6 +35,30 @@ tags: [embabel, a2a, a2ui, async-operation, correlation-id, hexagonal-architectu
 7. protocol 자체 task, context, message, surface DTO는 각 Inbound Adapter에 격리한다.
 8. 조회 결과도 Domain report/metrics를 직접 노출하지 않고 Application-owned read model로 변환한 뒤 각 Adapter DTO로 다시 매핑한다.
 
+### 유스케이스별 결과 artifact는 실행 lifecycle과 분리한다
+
+`AnalysisRun`은 모든 장기 실행의 공통 lifecycle만 소유한다. 최근 X 포스트 분석처럼 기간 분석 보고서와 구조가 다른 결과를 추가할 때 기존 `analysis_run.report_json` 의미를 넓히지 않고, `run_id`를 PK/FK로 사용하는 별도 `recent_x_analysis_result`에 schema version과 JSON artifact를 저장한다.
+
+```text
+analysis_run (공통 상태·correlation·metrics)
+    |
+    `-- recent_x_analysis_result (schema_version + result_json)
+```
+
+접수 시 빈 `CREATED` artifact를 먼저 저장하면 최근 X 조회 Port가 일반 기간 분석 run을 잘못 반환하지 않는다. 완료 artifact에는 회사 표현, 감정, post evidence, warning뿐 아니라 실제 호출 수와 `X API 2회 / LLM 1회` 상한도 함께 보존한다. H2에서 결과를 다시 읽을 때는 schema version을 확인하고, 직렬화·역직렬화·저장·조회 실패를 각각 등록된 Internal Code로 변환한다.
+
+```text
+REST / A2A DataPart / A2UI snapshot / future SSR
+                 |
+                 v
+SubmitRecentXAnalysisUseCase + QueryRecentXAnalysisUseCase
+                 |
+                 +--> AnalysisRunStore
+                 `--> RecentXAnalysisResultStore
+```
+
+A2A와 A2UI는 Application resource를 그대로 직렬화하지 않는다. A2A는 명시적인 DataPart map과 artifact로, A2UI는 protocol data model로 다시 매핑한다. 이 경계가 있어 Application record의 필드 변경이 wire contract의 암묵적 변경이 되지 않는다. A2A DataPart의 문자열 입력에도 REST와 같은 문자 수 제한을 적용해야 HTTP 외 protocol이 validation 우회 경로가 되지 않는다.
+
 ### Protocol version은 framework 호환선에 맞춘다
 
 Embabel Agent `1.5.0`의 공식 `embabel-agent-a2a` module은 A2A Java SDK `0.3.2.Final`과 protocol `0.3.0`을 사용한다. 따라서 A2A 1.0 wire contract를 임의로 섞지 않고 Agent Card에 `protocolVersion: 0.3.0`을 명시한다. Embabel의 기본 Autonomy handler가 공통 Application Port를 우회한다면 공식 endpoint registrar와 SDK type만 재사용하고 유스케이스 전용 `AgentCardHandler`를 구현한다.
@@ -103,6 +127,8 @@ return accepted;
 - 같은 Agent capability를 REST, A2A, A2UI에 동등하게 노출하는 기능
 - 사용자에게 진행 상태, 최종 결과, 안전한 실패와 trace를 제공해야 하는 작업
 - 프로토콜 SDK나 wire version을 Domain/Application에서 격리해야 하는 시스템
+- 서로 다른 결과 schema를 하나의 공통 run lifecycle에 연결해야 하는 유스케이스
+- SSR을 나중에 추가하되 먼저 REST/A2A/A2UI가 공유할 Application Port와 read model을 완성하려는 경우
 
 ## Examples
 
@@ -117,6 +143,8 @@ A2UI Request -> SubmitInfluencerAnalysisCommand -> AnalysisSubmissionResource ->
 각 Adapter의 request/response/task/message 타입을 Application command/resource로 재사용하지 않는다. 정상, validation 거절, capacity 거절, 실행 실패, timeout과 조회 누락을 세 프로토콜 contract test에서 같은 의미로 검증한다.
 
 HTTP body는 JSON binding 전에 유한한 byte budget으로 읽고, 업무 instruction에는 별도의 문자 수 제한을 둔다. 로컬 실험 API라 인증을 생략하는 경우에도 별도 `api` profile과 loopback bind로 외부 노출을 차단하고, 운영 공개는 인증·인가·tenant·rate limit 설계 후에만 진행한다.
+
+Template Engine SSR은 화면 설계가 확정된 뒤 동일한 Submit/Query Port에 연결한다. SSR Controller가 Embabel, X Adapter 또는 JPA Repository를 직접 호출하게 하지 않고, 별도 form/view model mapping만 추가한다.
 
 ## Related
 

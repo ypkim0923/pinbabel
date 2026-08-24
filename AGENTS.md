@@ -69,27 +69,32 @@ Prompt를 template으로 분리할 때는 별도 AI template framework를 추가
 
 ## 외부 인터페이스 및 API 제공 원칙
 
-사용자가 실행하거나 결과를 소비하는 모든 Agentic AI 유스케이스는 다음 세 가지 API를 함께 제공해야 한다.
+사용자가 실행하거나 결과를 소비하는 모든 Agentic AI 유스케이스는 다음 네 가지 최상위 인터페이스를 함께 제공해야 한다.
 
 1. **REST API**: 일반 애플리케이션과 운영 도구가 사용할 수 있는 HTTP/JSON 계약
 2. **A2A API**: 다른 Agent가 capability를 발견하고 작업을 요청하며 상태와 산출물을 교환할 수 있는 Agent-to-Agent 계약
 3. **A2UI API**: Agent가 생성한 결과와 상호작용 상태를 클라이언트 UI에 전달할 수 있는 Agent-to-User Interface 계약
+4. **Template Engine SSR**: 서버에서 HTML을 렌더링하여 브라우저 사용자에게 검색, 실행 상태, 결과와 근거를 제공하는 웹 UI
+
+CLI는 개발, 실험과 운영 확인을 위한 보조 Inbound Adapter이며 네 가지 최상위 사용자 인터페이스의 대체물로 간주하지 않는다. REST API는 이후 CSR 프런트엔드에서도 사용할 수 있도록 HTML 렌더링 계약과 분리된 안정적인 JSON 계약으로 유지한다.
 
 ### 공통 유스케이스와 Adapter 경계
 
-- REST, A2A, A2UI는 서로 다른 비즈니스 구현을 소유하지 않는다. 하나의 Application Use Case 또는 Inbound Port를 호출하는 독립적인 Inbound Adapter로 구현한다.
-- 패키지 후보는 `adapter.in.rest`, `adapter.in.a2a`, `adapter.in.a2ui`로 구분하되 실제 module과 Slice 구조를 확인한 뒤 확정한다.
+- REST, A2A, A2UI, Template Engine SSR은 서로 다른 비즈니스 구현을 소유하지 않는다. 하나의 Application Use Case 또는 Inbound Port를 호출하는 독립적인 Inbound Adapter로 구현한다.
+- 패키지 후보는 `adapter.in.rest`, `adapter.in.a2a`, `adapter.in.a2ui`, `adapter.in.web`으로 구분하되 실제 module과 Slice 구조를 확인한 뒤 확정한다.
 - 각 프로토콜의 request, response, task, message, artifact, UI component DTO를 Domain Model이나 Application Model로 직접 사용하지 않는다.
 - 각 Adapter는 프로토콜 입력을 Application command/query로 변환하고, 유스케이스 결과와 오류를 해당 프로토콜 계약으로 변환한다.
 - A2A와 A2UI 연동에서도 Agent 실행과 orchestration은 Embabel이 소유해야 하며, 별도의 AI framework나 Agent runtime으로 Embabel 실행 경로를 우회하지 않는다.
+- SSR Controller는 Application Resource를 직접 template에 노출하지 않고 전용 Web Request, Response 또는 View Model로 Full Mapping한다. Template은 Domain Model, Port DTO, repository와 Embabel API를 직접 참조하지 않는다.
+- SSR은 서버 렌더링만으로 핵심 흐름이 동작하도록 구현하고 JavaScript는 점진적 향상에 사용한다. 입력은 서버에서 검증하고 출력은 기본 escaping을 유지하며, 상태 변경에는 CSRF 방어와 Post/Redirect/Get 적용 여부를 검토한다.
 
 ### 기능 동등성과 추적성
 
-- 세 API는 동일한 입력 범위, 검증 규칙, 분석 결과, provenance, 경고와 안전 정책을 제공해야 한다.
+- 네 인터페이스는 동일한 입력 범위, 검증 규칙, 분석 결과, provenance, 경고와 안전 정책을 제공해야 한다.
 - 프로토콜별 전송 방식이 다르더라도 동일한 분석 요청은 동일한 Application Use Case에 도달해야 한다.
 - 장기 실행, streaming, 진행 상태, 취소와 재개는 각 프로토콜이 지원하는 방식으로 매핑한다. 지원 차이가 있으면 기능 동등성 표에 제약과 대체 동작을 명시한다.
-- 모든 요청에는 공통 correlation ID와 analysis 또는 run ID를 부여하여 REST 요청, A2A task, A2UI interaction과 Embabel 실행 trace를 연결할 수 있어야 한다.
-- 인증, 인가, tenant 격리, rate limit, 입력 크기 제한과 audit 정책은 세 API에 동등하게 적용한다. A2A나 A2UI를 우회 경로로 두지 않는다.
+- 모든 요청에는 공통 correlation ID와 analysis 또는 run ID를 부여하여 REST 요청, A2A task, A2UI interaction, SSR web request와 Embabel 실행 trace를 연결할 수 있어야 한다.
+- 인증, 인가, tenant 격리, rate limit, 입력 크기 제한과 audit 정책은 네 인터페이스에 동등하게 적용한다. A2A, A2UI 또는 SSR을 우회 경로로 두지 않는다.
 
 ### 프로토콜 및 버전 관리
 
@@ -101,11 +106,11 @@ Prompt를 template으로 분리할 때는 별도 AI template framework를 추가
 
 ### API 완료 기준
 
-- 기능 설계 시 REST, A2A, A2UI capability와 지원 차이를 나타내는 기능 동등성 표를 작성한다.
-- 각 API에 정상, validation 실패, 인증·인가 실패, timeout, 부분 실패와 취소 시나리오를 포함한 contract test를 작성한다.
-- 세 Adapter가 같은 Application Use Case를 호출하고 Domain/Application 계층이 protocol type에 의존하지 않는지 architecture test로 검증한다.
-- OpenAPI, A2A capability 또는 Agent Card, A2UI component와 event 계약 등 각 소비자가 필요한 발견 및 계약 문서를 함께 갱신한다.
-- 세 API 중 하나라도 누락되거나 해당 API의 계약 및 동등성 테스트가 없으면 사용자 대상 Agentic AI 기능이 완료된 것으로 간주하지 않는다.
+- 기능 설계 시 REST, A2A, A2UI, Template Engine SSR의 capability와 지원 차이를 나타내는 기능 동등성 표를 작성한다.
+- 각 인터페이스에 정상, validation 실패, 인증·인가 실패, timeout, 부분 실패와 취소 시나리오를 포함한 contract 또는 adapter test를 작성한다.
+- 네 Adapter가 같은 Application Use Case를 호출하고 Domain/Application 계층이 protocol 및 template engine type에 의존하지 않는지 architecture test로 검증한다.
+- OpenAPI, A2A capability 또는 Agent Card, A2UI component와 event 계약, SSR route 및 화면 상태 계약 등 각 소비자가 필요한 발견 및 계약 문서를 함께 갱신한다.
+- 네 인터페이스 중 하나라도 누락되거나 해당 인터페이스의 계약 및 동등성 테스트가 없으면 사용자 대상 Agentic AI 기능이 완료된 것으로 간주하지 않는다.
 
 ## 첫 번째 주제: 주식 인플루언서 SNS 종목 분석
 

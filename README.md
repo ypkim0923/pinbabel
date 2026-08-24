@@ -2,6 +2,24 @@
 
 Pinbabel은 Embabel 1.5.0으로 주식 인플루언서의 공개 SNS 게시물을 분석하는 실험 프로젝트다. CLI에서는 재현 가능한 fixture 또는 X API의 공개 게시물을 대상으로 종목별 긍정·부정·중립·판단 불가 평가와 근거를 생성한다.
 
+## Thymeleaf SSR 실행
+
+외부 호출 없이 화면 전체 흐름을 확인하려면 다음 profile로 실행한다.
+
+```bash
+SPRING_PROFILES_ACTIVE=fixture,web ./gradlew bootRun
+```
+
+브라우저에서 `http://127.0.0.1:8080`을 연 뒤 `인플루언서 조회`를 누른다. Serenity 1명과 Fixture 9명이 표시되며, Fixture 프로필은 각 10개의 고정 포스트를 X API·LLM 호출 없이 즉시 분석한다.
+
+Serenity의 실제 최근 포스트 분석까지 실행하려면 환경 변수에 `X_BEARER_TOKEN`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`을 등록하고 다음 profile을 사용한다.
+
+```bash
+SPRING_PROFILES_ACTIVE=fixture,x,live-openai,web ./gradlew bootRun
+```
+
+Serenity 상세 화면 진입만으로는 비용이 발생하지 않는다. `최근 포스트 10개 분석` 버튼을 명시적으로 누를 때만 기존 비동기 실행 Port가 X API 최대 2회, LLM 최대 1회를 사용한다. 중복 POST는 10분 TTL의 일회성 세션 token으로 막고, 상태 조회는 2초 간격으로 최대 120초 동안 수행한다.
+
 ## CLI 실행
 
 Java 25와 `OPENAI_API_KEY`, `OPENAI_BASE_URL` 환경 변수가 필요하다. 키는 소스나 설정 파일에 기록하지 않고 프로세스 환경으로만 전달한다. `OPENAI_BASE_URL`은 OpenAI-compatible HTTPS endpoint여야 한다.
@@ -68,7 +86,7 @@ curl -sS -X POST http://127.0.0.1:8080/api/v1/x-influencer-analyses \
 curl -sS http://127.0.0.1:8080/api/v1/x-influencer-analyses/<runId>
 ```
 
-A2A는 `message/send`의 DataPart에 `operation=analyzeRecentXCompanies`와 `account`를 전달하며, A2UI는 `/a2ui/v0.9/x-influencer-analyses`에서 NDJSON snapshot을 제공한다. 세 경로는 동일한 비동기 Port와 H2 결과 artifact를 사용한다. SSR은 화면 설계 이후 이 Port에 연결한다.
+A2A는 `message/send`의 DataPart에 `operation=analyzeRecentXCompanies`와 `account`를 전달하며, A2UI는 `/a2ui/v0.9/x-influencer-analyses`에서 NDJSON snapshot을 제공한다. REST, A2A, A2UI와 Thymeleaf SSR은 동일한 비동기 Port와 H2 결과 artifact를 사용한다.
 
 실행 기록은 H2 인메모리 DB에 저장되므로 애플리케이션을 종료하거나 재시작하면 사라진다. 스키마는 Liquibase가 생성하고 Hibernate는 이를 검증한다.
 

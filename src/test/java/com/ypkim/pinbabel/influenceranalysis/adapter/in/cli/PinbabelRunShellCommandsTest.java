@@ -3,11 +3,11 @@ package com.ypkim.pinbabel.influenceranalysis.adapter.in.cli;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRunId;
-import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRunMetrics;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.QueryAnalysisRunsUseCase;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisProgressEventResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunDetailResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunSummaryResource;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunMetricsResource;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
@@ -49,7 +49,7 @@ class PinbabelRunShellCommandsTest {
 			null,
 			"AGENT_EXECUTION_FAILED",
 			"Agent execution failed",
-			new AnalysisRunMetrics(12L, 7L, new BigDecimal("0.0012"), List.of("gemini-3.6-flash")),
+			new AnalysisRunMetricsResource(12L, 7L, new BigDecimal("0.0012"), List.of("gemini-3.6-flash")),
 			null,
 			List.of(
 				event(1, "LLM_REQUESTED"),

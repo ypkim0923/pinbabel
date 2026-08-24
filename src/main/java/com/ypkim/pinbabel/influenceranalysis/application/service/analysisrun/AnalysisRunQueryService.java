@@ -5,6 +5,8 @@ import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.Que
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunDetailResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisProgressEventResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunSummaryResource;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunMetricsResource;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.InfluencerAnalysisReportResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.out.analysisrun.AnalysisRunStore;
 import java.util.List;
 import java.util.Optional;
@@ -48,8 +50,8 @@ public class AnalysisRunQueryService implements QueryAnalysisRunsUseCase {
 			stored.warningCode(),
 			stored.outcomeCode(),
 			stored.outcomeSummary(),
-			stored.metrics(),
-			stored.report(),
+			AnalysisRunMetricsResource.from(stored.metrics()),
+			InfluencerAnalysisReportResource.from(stored.report()),
 			stored.events().stream().map(AnalysisProgressEventResource::from).toList()
 		));
 	}

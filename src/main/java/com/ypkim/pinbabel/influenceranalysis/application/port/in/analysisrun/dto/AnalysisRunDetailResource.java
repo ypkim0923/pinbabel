@@ -1,7 +1,5 @@
 package com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto;
 
-import com.ypkim.pinbabel.influenceranalysis.application.domain.model.InfluencerAnalysisReport;
-import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRunMetrics;
 import java.time.Instant;
 import java.util.List;
 
@@ -17,8 +15,8 @@ public record AnalysisRunDetailResource(
 	String warningCode,
 	String outcomeCode,
 	String outcomeSummary,
-	AnalysisRunMetrics metrics,
-	InfluencerAnalysisReport report,
+	AnalysisRunMetricsResource metrics,
+	InfluencerAnalysisReportResource report,
 	List<AnalysisProgressEventResource> events
 ) {
 	public AnalysisRunDetailResource {

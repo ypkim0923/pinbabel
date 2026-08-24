@@ -431,6 +431,46 @@
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 57 },
       "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/persistence/evaluation/JpaEvaluationRunStore.java", "line": 78 }
+    },
+    {
+      "value": "PIN-IAN-0054",
+      "symbol": "InfluencerAnalysisInternalCode.API_REQUEST_INVALID",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 58 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/in/rest/PinbabelApiException.java", "line": 27 }
+    },
+    {
+      "value": "PIN-IAN-0055",
+      "symbol": "InfluencerAnalysisInternalCode.API_RUN_ID_INVALID",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 59 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/in/rest/PinbabelApiException.java", "line": 22 }
+    },
+    {
+      "value": "PIN-IAN-0056",
+      "symbol": "InfluencerAnalysisInternalCode.API_RUN_NOT_FOUND",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 60 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/in/rest/PinbabelApiException.java", "line": 42 }
+    },
+    {
+      "value": "PIN-IAN-0057",
+      "symbol": "InfluencerAnalysisInternalCode.API_UNEXPECTED_FAILURE",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 61 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/in/rest/PinbabelApiException.java", "line": 37 }
+    },
+    {
+      "value": "PIN-IAN-0058",
+      "symbol": "InfluencerAnalysisInternalCode.API_BODY_TOO_LARGE",
+      "owner": "influenceranalysis",
+      "status": "active",
+      "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 62 },
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/in/rest/PinbabelApiException.java", "line": 32 }
     }
   ]
 }

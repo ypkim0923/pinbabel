@@ -25,6 +25,7 @@ extra["jMoleculesIntegrationsVersion"] = "0.33.0"
 dependencies {
 	implementation("com.embabel.agent:embabel-agent-starter-byok:${property("embabelVersion")}")
 	implementation("com.embabel.agent:embabel-agent-starter-shell:${property("embabelVersion")}")
+	implementation("com.embabel.agent:embabel-agent-a2a:${property("embabelVersion")}")
 	implementation("org.jmolecules:jmolecules-ddd:${property("jMoleculesVersion")}")
 	implementation("org.jmolecules:jmolecules-hexagonal-architecture:${property("jMoleculesVersion")}")
 	implementation("org.springframework.boot:spring-boot-h2console")

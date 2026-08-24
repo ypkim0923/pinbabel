@@ -1,0 +1,69 @@
+openapi: 3.1.0
+info:
+  title: Pinbabel Local Experiment API
+  version: 1.0.0
+  description: Local-only REST and A2UI transport contracts. Start with the fixture and api profiles.
+servers:
+  - url: http://127.0.0.1:8080
+paths:
+  /api/v1/influencer-analyses:
+    post:
+      summary: Submit an influencer analysis
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/AnalysisRequest'}
+      responses:
+        '202': {description: Accepted, headers: {Location: {schema: {type: string}}}}
+        '400': {description: Rejected or invalid request}
+        '413': {description: Request body exceeds 16 KiB}
+        '429': {description: Execution capacity exhausted}
+  /api/v1/influencer-analyses/{runId}:
+    get:
+      summary: Get an analysis operation
+      security: []
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200': {description: Current operation state}
+        '400': {description: Invalid run ID}
+        '404': {description: Run not found}
+  /a2ui/v0.9/analyses:
+    post:
+      summary: Submit an analysis and receive an A2UI v0.9 snapshot
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/AnalysisRequest'}
+      responses:
+        '202':
+          description: A2UI JSON Lines snapshot
+          content: {application/x-ndjson: {schema: {type: string}}}
+  /a2ui/v0.9/analyses/{runId}:
+    get:
+      summary: Get the current A2UI v0.9 snapshot
+      security: []
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200':
+          description: Three ordered A2UI JSON Lines messages
+          content: {application/x-ndjson: {schema: {type: string}}}
+components:
+  schemas:
+    AnalysisRequest:
+      type: object
+      additionalProperties: false
+      required: [instruction]
+      properties:
+        instruction: {type: string, minLength: 1, maxLength: 4000}

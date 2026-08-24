@@ -1,6 +1,7 @@
 ---
 title: REST·A2A·A2UI가 하나의 비동기 실행 계약을 공유하기
 date: 2026-08-24
+last_updated: 2026-08-24
 category: architecture-patterns
 module: influenceranalysis
 problem_type: architecture_pattern
@@ -32,6 +33,19 @@ tags: [embabel, a2a, a2ui, async-operation, correlation-id, hexagonal-architectu
 5. REST, A2A, A2UI Adapter는 이 상태를 각 protocol 상태로 변환할 뿐 별도 상태 머신을 만들지 않는다.
 6. Domain `AnalysisTraceEvent`는 `AnalysisProgressEventResource`로 변환한 뒤 Adapter에 전달한다.
 7. protocol 자체 task, context, message, surface DTO는 각 Inbound Adapter에 격리한다.
+8. 조회 결과도 Domain report/metrics를 직접 노출하지 않고 Application-owned read model로 변환한 뒤 각 Adapter DTO로 다시 매핑한다.
+
+### Protocol version은 framework 호환선에 맞춘다
+
+Embabel Agent `1.5.0`의 공식 `embabel-agent-a2a` module은 A2A Java SDK `0.3.2.Final`과 protocol `0.3.0`을 사용한다. 따라서 A2A 1.0 wire contract를 임의로 섞지 않고 Agent Card에 `protocolVersion: 0.3.0`을 명시한다. Embabel의 기본 Autonomy handler가 공통 Application Port를 우회한다면 공식 endpoint registrar와 SDK type만 재사용하고 유스케이스 전용 `AgentCardHandler`를 구현한다.
+
+A2UI는 `v0.9` envelope를 사용한다. HTTP transport는 `application/x-ndjson`이며 다음 순서를 지킨다.
+
+```text
+createSurface -> updateComponents(root 포함) -> updateDataModel
+```
+
+`createSurface.catalogId`는 Basic Catalog URL을 명시하고, `updateDataModel.path`는 `/`에서 시작하는 JSON Pointer다. A2UI가 transport를 강제하지 않으므로 이번 HTTP endpoint는 지속 연결 streaming이 아니라 현재 상태 snapshot임을 계약에 기록한다.
 
 공통 호출 방향은 다음과 같다.
 
@@ -71,7 +85,7 @@ return accepted;
 | `FAILED` | terminal failure | `FAILED` | safe failure |
 | `REJECTED` | validation/capacity rejection | `REJECTED` | safe rejection |
 
-`runId`는 Pinbabel 실행 Aggregate의 식별자이고 `correlationId`는 프로토콜 횡단 추적 식별자다. A2A task/context ID나 A2UI surface ID를 둘 중 하나와 암묵적으로 동일시하지 않는다. Adapter가 외부 식별자와 내부 식별자의 매핑을 명시적으로 소유해야 protocol version 변경이 Domain에 전파되지 않는다.
+`runId`는 Pinbabel 실행 Aggregate의 식별자이고 `correlationId`는 프로토콜 횡단 추적 식별자다. Pinbabel A2A Adapter는 `runId -> taskId`, `correlationId -> contextId`를 명시적으로 매핑하고 A2UI surface ID는 `pinbabel-analysis-{runId}`로 파생한다. 이 매핑을 Adapter가 소유해야 protocol version 변경이 Domain에 전파되지 않는다.
 
 ## Why This Matters
 
@@ -97,13 +111,16 @@ return accepted;
 ```text
 REST Request -> SubmitInfluencerAnalysisCommand -> AnalysisSubmissionResource -> REST Response
 A2A Message  -> SubmitInfluencerAnalysisCommand -> AnalysisSubmissionResource -> A2A Task
-A2UI Event   -> SubmitInfluencerAnalysisCommand -> AnalysisProgressEventResource -> A2UI messages
+A2UI Request -> SubmitInfluencerAnalysisCommand -> AnalysisSubmissionResource -> A2UI messages
 ```
 
 각 Adapter의 request/response/task/message 타입을 Application command/resource로 재사용하지 않는다. 정상, validation 거절, capacity 거절, 실행 실패, timeout과 조회 누락을 세 프로토콜 contract test에서 같은 의미로 검증한다.
+
+HTTP body는 JSON binding 전에 유한한 byte budget으로 읽고, 업무 instruction에는 별도의 문자 수 제한을 둔다. 로컬 실험 API라 인증을 생략하는 경우에도 별도 `api` profile과 loopback bind로 외부 노출을 차단하고, 운영 공개는 인증·인가·tenant·rate limit 설계 후에만 진행한다.
 
 ## Related
 
 - [Golden Dataset 채점과 Embabel Agent 실행을 분리하기](./separate-golden-dataset-scoring-from-agent-execution-2026-08-24.md)
 - [Embabel listener 실패를 Agent 실행에서 격리하기](../integration-issues/isolate-embabel-listener-failures-from-agent-execution-2026-08-24.md)
 - [공통 실행 계약 구현 계획](../../plans/2026-08-24-003-feat-common-analysis-execution-contract-plan.md)
+- [REST·A2A·A2UI Adapter 구현 계획](../../plans/2026-08-24-004-feat-rest-a2a-a2ui-adapters-plan.md)

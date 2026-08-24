@@ -12,6 +12,16 @@ class AnalysisRunTest {
 
 	private static final Instant CREATED_AT = Instant.parse("2026-08-24T01:00:00Z");
 	private static final AnalysisRunId RUN_ID = new AnalysisRunId("0198d1bb-99e0-7000-8000-000000000001");
+	private static final AnalysisCorrelationId CORRELATION_ID =
+		new AnalysisCorrelationId("0298d1bb-99e0-7000-8000-000000000001");
+
+	@Test
+	void requiresCorrelationIdentifier() {
+		assertThatThrownBy(() -> AnalysisRun.create(RUN_ID, null, CREATED_AT))
+			.isInstanceOf(IllegalArgumentException.class);
+		assertThat(AnalysisRun.create(RUN_ID, CORRELATION_ID, CREATED_AT).correlationId())
+			.isEqualTo(CORRELATION_ID);
+	}
 
 	@Test
 	void completesRunningAnalysisAndCalculatesDuration() {

@@ -9,6 +9,7 @@ import java.util.List;
 
 public record StoredAnalysisRunDetail(
 	String runId,
+	String correlationId,
 	AnalysisRunStatus status,
 	Instant createdAt,
 	Instant startedAt,

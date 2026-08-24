@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-08-24-003-add-analysis-correlation-id
+      author: ypkim
+      changes:
+        - addColumn:
+            tableName: analysis_run
+            columns:
+              - column:
+                  name: correlation_id
+                  type: varchar(36)
+        - update:
+            tableName: analysis_run
+            columns:
+              - column:
+                  name: correlation_id
+                  valueComputed: run_id
+            where: correlation_id IS NULL
+        - addNotNullConstraint:
+            tableName: analysis_run
+            columnName: correlation_id
+            columnDataType: varchar(36)
+        - addUniqueConstraint:
+            tableName: analysis_run
+            columnNames: correlation_id
+            constraintName: uk_analysis_run_correlation_id
+      rollback:
+        - dropUniqueConstraint:
+            tableName: analysis_run
+            constraintName: uk_analysis_run_correlation_id
+        - dropColumn:
+            tableName: analysis_run
+            columnName: correlation_id

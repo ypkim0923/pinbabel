@@ -31,7 +31,9 @@ class GoldenDatasetEvaluationServiceTest {
 				throw new IllegalStateException("provider unavailable");
 			}
 			return new AnalyzeInfluencerPostsResource(
-				"0198d1bb-99e0-7000-8000-000000000002", "FAILED", "failed", null,
+				"0198d1bb-99e0-7000-8000-000000000002",
+				"0198d1bb-99e0-7000-8000-000000000003",
+				"FAILED", "failed", null,
 				"Not investment advice", true, List.of()
 			);
 		};

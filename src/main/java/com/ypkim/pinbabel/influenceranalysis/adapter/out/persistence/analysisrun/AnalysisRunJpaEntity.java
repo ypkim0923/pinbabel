@@ -19,6 +19,9 @@ class AnalysisRunJpaEntity {
 	@Column(name = "run_id", nullable = false, length = 36)
 	private String runId;
 
+	@Column(name = "correlation_id", nullable = false, unique = true, length = 36)
+	private String correlationId;
+
 	@Column(name = "status", nullable = false, length = 20)
 	private String status;
 
@@ -75,6 +78,7 @@ class AnalysisRunJpaEntity {
 	static AnalysisRunJpaEntity from(AnalysisRun run) {
 		var entity = new AnalysisRunJpaEntity();
 		entity.runId = run.id().value();
+		entity.correlationId = run.correlationId().value();
 		entity.createdAt = run.createdAt();
 		return entity;
 	}
@@ -100,6 +104,7 @@ class AnalysisRunJpaEntity {
 	}
 
 	String runId() { return runId; }
+	String correlationId() { return correlationId; }
 	String status() { return status; }
 	Instant createdAt() { return createdAt; }
 	Instant startedAt() { return startedAt; }

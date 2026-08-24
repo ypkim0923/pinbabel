@@ -4,9 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRunId;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRunMetrics;
-import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRunStatus;
-import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisTraceEvent;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.QueryAnalysisRunsUseCase;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisProgressEventResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunDetailResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunSummaryResource;
 import java.math.BigDecimal;
@@ -18,13 +17,14 @@ import org.junit.jupiter.api.Test;
 class PinbabelRunShellCommandsTest {
 
 	private static final String RUN_ID = "0198d1bb-99e0-7000-8000-000000000001";
+	private static final String CORRELATION_ID = "0198d1bb-99e0-7000-8000-000000000002";
 	private static final Instant CREATED_AT = Instant.parse("2026-08-24T01:00:00Z");
 
 	@Test
 	void rendersRecentRuns() {
 		var commands = commands(new StubQueryUseCase(
 			List.of(new AnalysisRunSummaryResource(
-				RUN_ID, AnalysisRunStatus.COMPLETED, CREATED_AT, CREATED_AT, 1200L, true
+				RUN_ID, CORRELATION_ID, "COMPLETED", CREATED_AT, CREATED_AT, 1200L, true
 			)),
 			Optional.empty()
 		));
@@ -39,7 +39,8 @@ class PinbabelRunShellCommandsTest {
 	void rendersDetailEventsInProvidedOrder() {
 		var detail = new AnalysisRunDetailResource(
 			RUN_ID,
-			AnalysisRunStatus.FAILED,
+			CORRELATION_ID,
+			"FAILED",
 			CREATED_AT,
 			CREATED_AT,
 			CREATED_AT.plusSeconds(1),
@@ -96,8 +97,8 @@ class PinbabelRunShellCommandsTest {
 		return new PinbabelRunShellCommands(useCase, new PinbabelCliRenderer());
 	}
 
-	private static AnalysisTraceEvent event(long sequence, String type) {
-		return new AnalysisTraceEvent(sequence, type, CREATED_AT, "process-1", null, null, null, null, null, null);
+	private static AnalysisProgressEventResource event(long sequence, String type) {
+		return new AnalysisProgressEventResource(sequence, type, CREATED_AT, null, null, null, null, null);
 	}
 
 	private record StubQueryUseCase(

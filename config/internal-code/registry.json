@@ -382,7 +382,7 @@
       "owner": "influenceranalysis",
       "status": "active",
       "declaration": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/application/domain/error/InfluencerAnalysisInternalCode.java", "line": 51 },
-      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/persistence/analysisrun/JpaAnalysisRunStore.java", "line": 154 }
+      "occurrence": { "path": "src/main/java/com/ypkim/pinbabel/influenceranalysis/adapter/out/persistence/analysisrun/JpaAnalysisRunStore.java", "line": 156 }
     },
     {
       "value": "PIN-IAN-0048",

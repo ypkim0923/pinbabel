@@ -5,6 +5,7 @@ import java.time.Instant;
 
 public record StoredAnalysisRunSummary(
 	String runId,
+	String correlationId,
 	AnalysisRunStatus status,
 	Instant createdAt,
 	Instant startedAt,

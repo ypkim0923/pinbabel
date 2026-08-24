@@ -109,6 +109,7 @@ class JpaAnalysisRunStore implements AnalysisRunStore {
 	private StoredAnalysisRunSummary toSummary(AnalysisRunJpaEntity entity) {
 		return new StoredAnalysisRunSummary(
 			entity.runId(),
+			entity.correlationId(),
 			AnalysisRunStatus.valueOf(entity.status()),
 			entity.createdAt(),
 			entity.startedAt(),
@@ -123,6 +124,7 @@ class JpaAnalysisRunStore implements AnalysisRunStore {
 	) {
 		return new StoredAnalysisRunDetail(
 			entity.runId(),
+			entity.correlationId(),
 			AnalysisRunStatus.valueOf(entity.status()),
 			entity.createdAt(),
 			entity.startedAt(),

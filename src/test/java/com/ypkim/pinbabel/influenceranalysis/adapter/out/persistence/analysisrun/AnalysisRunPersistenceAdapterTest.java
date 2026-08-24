@@ -8,6 +8,7 @@ import com.ypkim.pinbabel.influenceranalysis.application.domain.model.Influencer
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.InstrumentSummary;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.Sentiment;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRun;
+import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisCorrelationId;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRunId;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRunStatus;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisTraceEvent;
@@ -37,7 +38,8 @@ class AnalysisRunPersistenceAdapterTest {
 	@Test
 	void storesLifecycleEventsAndStructuredReport() {
 		var createdAt = Instant.parse("2026-08-24T01:00:00Z");
-		var run = AnalysisRun.create(id(1), createdAt);
+		var correlationId = correlationId(1);
+		var run = AnalysisRun.create(id(1), correlationId, createdAt);
 		store.save(run, null);
 		run.start(createdAt.plusSeconds(1));
 		store.save(run, null);
@@ -50,6 +52,7 @@ class AnalysisRunPersistenceAdapterTest {
 		var detail = store.findById(run.id()).orElseThrow();
 
 		assertThat(detail.status()).isEqualTo(AnalysisRunStatus.COMPLETED);
+		assertThat(detail.correlationId()).isEqualTo(correlationId.value());
 		assertThat(detail.durationMs()).isEqualTo(3_000L);
 		assertThat(detail.report()).isEqualTo(report);
 		assertThat(detail.events()).extracting(AnalysisTraceEvent::sequence).containsExactly(1L, 2L);
@@ -121,5 +124,9 @@ class AnalysisRunPersistenceAdapterTest {
 
 	private static AnalysisRunId id(int suffix) {
 		return new AnalysisRunId("0198d1bb-99e0-7000-8000-%012d".formatted(suffix));
+	}
+
+	private static AnalysisCorrelationId correlationId(int suffix) {
+		return new AnalysisCorrelationId("0298d1bb-99e0-7000-8000-%012d".formatted(suffix));
 	}
 }

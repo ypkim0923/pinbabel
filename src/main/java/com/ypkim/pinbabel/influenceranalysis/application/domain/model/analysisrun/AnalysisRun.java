@@ -10,6 +10,7 @@ public final class AnalysisRun {
 
 	@Identity
 	private final AnalysisRunId id;
+	private final AnalysisCorrelationId correlationId;
 	private final Instant createdAt;
 	private AnalysisRunStatus status;
 	private Instant startedAt;
@@ -21,19 +22,24 @@ public final class AnalysisRun {
 	private String embabelProcessId;
 	private AnalysisRunMetrics metrics;
 
-	private AnalysisRun(AnalysisRunId id, Instant createdAt) {
-		if (id == null || createdAt == null) {
-			throw new IllegalArgumentException("Analysis run identifier and creation time are required");
+	private AnalysisRun(AnalysisRunId id, AnalysisCorrelationId correlationId, Instant createdAt) {
+		if (id == null || correlationId == null || createdAt == null) {
+			throw new IllegalArgumentException("Analysis run identifiers and creation time are required");
 		}
 		this.id = id;
+		this.correlationId = correlationId;
 		this.createdAt = createdAt;
 		this.status = AnalysisRunStatus.CREATED;
 		this.traceAvailable = true;
 		this.metrics = AnalysisRunMetrics.EMPTY;
 	}
 
+	public static AnalysisRun create(AnalysisRunId id, AnalysisCorrelationId correlationId, Instant createdAt) {
+		return new AnalysisRun(id, correlationId, createdAt);
+	}
+
 	public static AnalysisRun create(AnalysisRunId id, Instant createdAt) {
-		return new AnalysisRun(id, createdAt);
+		return create(id, AnalysisCorrelationId.newId(), createdAt);
 	}
 
 	public void start(Instant occurredAt) {
@@ -116,6 +122,10 @@ public final class AnalysisRun {
 
 	public AnalysisRunId id() {
 		return id;
+	}
+
+	public AnalysisCorrelationId correlationId() {
+		return correlationId;
 	}
 
 	public AnalysisRunStatus status() {

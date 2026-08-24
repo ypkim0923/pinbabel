@@ -13,6 +13,7 @@ class PinbabelShellCommandsTest {
 	void mapsNaturalLanguageToApplicationUseCaseAndRendersOutcome() {
 		AnalyzeInfluencerPostsUseCase useCase = command -> new AnalyzeInfluencerPostsResource(
 			"0198d1bb-99e0-7000-8000-000000000001",
+			"0198d1bb-99e0-7000-8000-000000000002",
 			"REFUSED",
 			"domain only",
 			null,

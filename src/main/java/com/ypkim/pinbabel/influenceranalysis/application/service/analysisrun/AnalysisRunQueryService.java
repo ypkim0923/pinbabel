@@ -3,6 +3,7 @@ package com.ypkim.pinbabel.influenceranalysis.application.service.analysisrun;
 import com.ypkim.pinbabel.influenceranalysis.application.domain.model.analysisrun.AnalysisRunId;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.QueryAnalysisRunsUseCase;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunDetailResource;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisProgressEventResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunSummaryResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.out.analysisrun.AnalysisRunStore;
 import java.util.List;
@@ -23,7 +24,8 @@ public class AnalysisRunQueryService implements QueryAnalysisRunsUseCase {
 		return store.findLatest(RECENT_RUN_LIMIT).stream()
 			.map(stored -> new AnalysisRunSummaryResource(
 				stored.runId(),
-				stored.status(),
+				stored.correlationId(),
+				stored.status().name(),
 				stored.createdAt(),
 				stored.startedAt(),
 				stored.durationMs(),
@@ -36,7 +38,8 @@ public class AnalysisRunQueryService implements QueryAnalysisRunsUseCase {
 	public Optional<AnalysisRunDetailResource> findRun(AnalysisRunId runId) {
 		return store.findById(runId).map(stored -> new AnalysisRunDetailResource(
 			stored.runId(),
-			stored.status(),
+			stored.correlationId(),
+			stored.status().name(),
 			stored.createdAt(),
 			stored.startedAt(),
 			stored.completedAt(),
@@ -47,7 +50,7 @@ public class AnalysisRunQueryService implements QueryAnalysisRunsUseCase {
 			stored.outcomeSummary(),
 			stored.metrics(),
 			stored.report(),
-			stored.events()
+			stored.events().stream().map(AnalysisProgressEventResource::from).toList()
 		));
 	}
 }

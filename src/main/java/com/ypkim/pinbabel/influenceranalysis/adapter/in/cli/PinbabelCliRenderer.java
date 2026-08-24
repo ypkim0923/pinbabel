@@ -16,6 +16,7 @@ public class PinbabelCliRenderer {
 	public String render(AnalyzeInfluencerPostsResource resource) {
 		var result = new StringBuilder()
 			.append("runId: ").append(resource.runId()).append('\n')
+			.append("correlationId: ").append(resource.correlationId()).append('\n')
 			.append("status: ").append(resource.status()).append('\n')
 			.append("message: ").append(resource.message()).append('\n')
 			.append("traceAvailable: ").append(resource.traceAvailable()).append('\n');
@@ -35,6 +36,7 @@ public class PinbabelCliRenderer {
 		var result = new StringBuilder("recentRuns: ").append(runs.size()).append('\n');
 		for (var run : runs) {
 			result.append("- runId: ").append(run.runId())
+				.append(", correlationId: ").append(run.correlationId())
 				.append(", status: ").append(run.status())
 				.append(", createdAt: ").append(run.createdAt())
 				.append(", durationMs: ").append(run.durationMs())
@@ -47,6 +49,7 @@ public class PinbabelCliRenderer {
 	public String renderRunDetail(AnalysisRunDetailResource run) {
 		var result = new StringBuilder()
 			.append("runId: ").append(run.runId()).append('\n')
+			.append("correlationId: ").append(run.correlationId()).append('\n')
 			.append("status: ").append(run.status()).append('\n')
 			.append("createdAt: ").append(run.createdAt()).append('\n')
 			.append("startedAt: ").append(run.startedAt()).append('\n')

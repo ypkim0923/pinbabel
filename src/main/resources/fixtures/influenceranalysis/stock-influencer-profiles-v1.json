@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "profiles": [
+    {"id":"serenity","handle":"@aleabitoreddit","displayName":"Serenity","description":"기술주와 시장 흐름을 관찰하는 실제 공개 X 계정","investmentStyle":"기술 성장주 · 시장 관찰","source":"LIVE_X","avatarInitials":"SE","avatarColor":"teal"},
+    {"id":"growth-lab","handle":"@pin_growthlab","displayName":"Pin Growth Lab","description":"클라우드와 소프트웨어 성장 기업을 추적하는 Fixture 리서처","investmentStyle":"성장주 · 클라우드","source":"FIXTURE","avatarInitials":"GL","avatarColor":"amber"},
+    {"id":"silicon-signal","handle":"@pin_semis","displayName":"Silicon Signal","description":"AI 반도체 공급망의 신호를 읽는 Fixture 리서처","investmentStyle":"AI · 반도체","source":"FIXTURE","avatarInitials":"SS","avatarColor":"coral"},
+    {"id":"value-ledger","handle":"@pin_value","displayName":"Value Ledger","description":"현금흐름과 산업재 사이클을 기록하는 Fixture 리서처","investmentStyle":"가치주 · 산업재","source":"FIXTURE","avatarInitials":"VL","avatarColor":"blue"},
+    {"id":"dividend-harbor","handle":"@pin_dividend","displayName":"Dividend Harbor","description":"배당의 지속성과 방어력을 살피는 Fixture 리서처","investmentStyle":"배당 · 방어주","source":"FIXTURE","avatarInitials":"DH","avatarColor":"olive"},
+    {"id":"bio-catalyst","handle":"@pin_biotech","displayName":"Bio Catalyst","description":"임상과 신약 모멘텀을 검토하는 Fixture 리서처","investmentStyle":"바이오 · 헬스케어","source":"FIXTURE","avatarInitials":"BC","avatarColor":"rose"},
+    {"id":"consumer-tape","handle":"@pin_consumer","displayName":"Consumer Tape","description":"소비 데이터와 브랜드 수요를 읽는 Fixture 리서처","investmentStyle":"소비재 · 리테일","source":"FIXTURE","avatarInitials":"CT","avatarColor":"slate"},
+    {"id":"fintech-lens","handle":"@pin_fintech","displayName":"Fintech Lens","description":"결제 네트워크와 핀테크 경쟁을 보는 Fixture 리서처","investmentStyle":"결제 · 핀테크","source":"FIXTURE","avatarInitials":"FL","avatarColor":"gold"},
+    {"id":"energy-cycle","handle":"@pin_energy","displayName":"Energy Cycle","description":"에너지 가격과 설비 투자를 추적하는 Fixture 리서처","investmentStyle":"전통 · 신재생 에너지","source":"FIXTURE","avatarInitials":"EC","avatarColor":"aqua"},
+    {"id":"future-mobility","handle":"@pin_mobility","displayName":"Future Mobility","description":"전기차와 이동 플랫폼을 비교하는 Fixture 리서처","investmentStyle":"전기차 · 모빌리티","source":"FIXTURE","avatarInitials":"FM","avatarColor":"clay"}
+  ]
+}

@@ -16,7 +16,8 @@ class PinbabelDiscoveryShellCommandsTest {
 			false,
 			false,
 			List.of(new XStockInfluencerRecommendationResource(
-				"x", "@aleabitoreddit", "Serenity", "사용자 지정", "USER_CURATED"
+				"serenity", "x", "@aleabitoreddit", "Serenity", "사용자 지정", "USER_CURATED",
+				"기술 성장주", "LIVE_X", "SE", "teal"
 			))
 		);
 		var commands = new PinbabelDiscoveryShellCommands(() -> resource, new PinbabelCliRenderer());

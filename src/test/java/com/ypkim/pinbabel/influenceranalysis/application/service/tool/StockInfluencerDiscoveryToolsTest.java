@@ -43,7 +43,8 @@ class StockInfluencerDiscoveryToolsTest {
 			false,
 			false,
 			List.of(new XStockInfluencerRecommendationResource(
-				"x", "@aleabitoreddit", "Serenity", "user curated", "USER_CURATED"
+				"serenity", "x", "@aleabitoreddit", "Serenity", "user curated", "USER_CURATED",
+				"technology growth", "LIVE_X", "SE", "teal"
 			))
 		);
 	}

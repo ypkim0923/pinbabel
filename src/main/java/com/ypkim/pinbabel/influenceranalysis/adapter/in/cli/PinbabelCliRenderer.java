@@ -49,9 +49,11 @@ public class PinbabelCliRenderer {
 			.append("llmUsed: ").append(resource.llmUsed()).append('\n')
 			.append("accounts: ").append(resource.accounts().size()).append('\n');
 		for (var account : resource.accounts()) {
-			result.append("- ").append(account.handle())
+			result.append("- [").append(account.profileId()).append("] ").append(account.handle())
 				.append(" (").append(account.displayName()).append(")")
 				.append(", platform: ").append(account.platform())
+				.append(", sourceType: ").append(account.sourceType())
+				.append(", investmentStyle: ").append(account.investmentStyle())
 				.append(", selectionBasis: ").append(account.selectionBasis())
 				.append(", reason: ").append(account.reason())
 				.append('\n');

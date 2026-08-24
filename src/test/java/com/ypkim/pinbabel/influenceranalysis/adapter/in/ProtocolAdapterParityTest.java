@@ -14,13 +14,18 @@ import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.Que
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunDetailResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunMetricsResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.AnalysisRunSummaryResource;
+import com.ypkim.pinbabel.influenceranalysis.application.port.in.analysisrun.dto.InfluencerAnalysisReportResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.dto.AnalysisSubmissionResource;
 import com.ypkim.pinbabel.influenceranalysis.application.port.in.dto.SubmitInfluencerAnalysisCommand;
+import io.a2a.spec.DataPart;
+import io.a2a.spec.GetTaskRequest;
+import io.a2a.spec.GetTaskResponse;
 import io.a2a.spec.Message;
 import io.a2a.spec.MessageSendParams;
 import io.a2a.spec.SendMessageRequest;
 import io.a2a.spec.SendMessageResponse;
 import io.a2a.spec.Task;
+import io.a2a.spec.TaskQueryParams;
 import io.a2a.spec.TextPart;
 import java.time.Instant;
 import java.util.List;
@@ -54,8 +59,60 @@ class ProtocolAdapterParityTest {
 		assertThat(a2aTask.getContextId()).isEqualTo(CORRELATION_ID);
 	}
 
+	@Test
+	void a2aCompletedTaskOmitsUnknownInstrumentIdentifiersFromEvidence() {
+		var ports = new RecordingPorts(completedRunWithUnknownInstrumentEvidence());
+		var a2a = new PinbabelA2AAgentCardHandler(ports, ports, "http://127.0.0.1:8080");
+
+		var response = (GetTaskResponse) a2a.handleJsonRpc(
+			new GetTaskRequest("request-2", new TaskQueryParams(RUN_ID, 0))
+		);
+		var task = response.getResult();
+		var report = (DataPart) task.getArtifacts().getFirst().parts().getFirst();
+		@SuppressWarnings("unchecked")
+		var evidence = (List<java.util.Map<String, Object>>) report.getData().get("evidence");
+
+		assertThat(task.getStatus().state()).isEqualTo(io.a2a.spec.TaskState.COMPLETED);
+		assertThat(evidence.getFirst())
+			.containsEntry("sentiment", "UNCERTAIN")
+			.doesNotContainKeys("instrumentId", "ticker");
+	}
+
+	private static AnalysisRunDetailResource completedRunWithUnknownInstrumentEvidence() {
+		var report = new InfluencerAnalysisReportResource(
+			"fixture-social",
+			"market_maven",
+			new InfluencerAnalysisReportResource.PeriodResource(Instant.EPOCH, Instant.EPOCH.plusSeconds(86_400), "UTC"),
+			List.of(),
+			List.of(new InfluencerAnalysisReportResource.EvidenceResource(
+				"post-injection", "fixture-social", "market_maven", Instant.EPOCH,
+				"https://social.example/posts/post-injection", "fixture", null, null,
+				"UNCERTAIN", "untrusted content", "No canonical instrument"
+			)),
+			List.of(),
+			"Not investment advice"
+		);
+		return new AnalysisRunDetailResource(
+			RUN_ID, CORRELATION_ID, "COMPLETED", Instant.EPOCH, Instant.EPOCH, Instant.EPOCH, 0L, true,
+			null, "ANALYSIS_COMPLETED", "Analysis completed",
+			new AnalysisRunMetricsResource(null, null, null, List.of()), report, List.of()
+		);
+	}
+
 	private static final class RecordingPorts implements SubmitInfluencerAnalysisUseCase, QueryAnalysisRunsUseCase {
 		private final List<String> instructions = new java.util.ArrayList<>();
+		private final AnalysisRunDetailResource detail;
+
+		private RecordingPorts() {
+			this(new AnalysisRunDetailResource(
+				RUN_ID, CORRELATION_ID, "CREATED", Instant.EPOCH, null, null, null, false,
+				null, null, null, new AnalysisRunMetricsResource(null, null, null, List.of()), null, List.of()
+			));
+		}
+
+		private RecordingPorts(AnalysisRunDetailResource detail) {
+			this.detail = detail;
+		}
 
 		@Override
 		public AnalysisSubmissionResource submit(SubmitInfluencerAnalysisCommand command) {
@@ -68,10 +125,7 @@ class ProtocolAdapterParityTest {
 
 		@Override
 		public Optional<AnalysisRunDetailResource> findRun(AnalysisRunId runId) {
-			return Optional.of(new AnalysisRunDetailResource(
-				RUN_ID, CORRELATION_ID, "CREATED", Instant.EPOCH, null, null, null, false,
-				null, null, null, new AnalysisRunMetricsResource(null, null, null, List.of()), null, List.of()
-			));
+			return Optional.of(detail);
 		}
 	}
 }

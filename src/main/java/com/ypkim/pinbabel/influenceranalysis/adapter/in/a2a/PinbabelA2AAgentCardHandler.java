@@ -169,16 +169,25 @@ public class PinbabelA2AAgentCardHandler implements AgentCardHandler {
 			"neutralCount", item.neutralCount(), "uncertainCount", item.uncertainCount(),
 			"conflicting", item.conflicting(), "evidencePostIds", item.evidencePostIds()
 		)).toList());
-		result.put("evidence", report.evidence().stream().map(item -> Map.<String, Object>ofEntries(
-			Map.entry("postId", item.postId()), Map.entry("platform", item.platform()),
-			Map.entry("authorId", item.authorId()), Map.entry("publishedAt", item.publishedAt().toString()),
-			Map.entry("url", item.url()), Map.entry("source", item.source()),
-			Map.entry("instrumentId", item.instrumentId()), Map.entry("ticker", item.ticker()),
-			Map.entry("sentiment", item.sentiment()), Map.entry("excerpt", item.excerpt()),
-			Map.entry("rationale", item.rationale())
-		)).toList());
+		result.put("evidence", report.evidence().stream().map(this::evidenceData).toList());
 		result.put("warnings", report.warnings());
 		result.put("disclaimer", report.disclaimer());
+		return Map.copyOf(result);
+	}
+
+	private Map<String, Object> evidenceData(InfluencerAnalysisReportResource.EvidenceResource evidence) {
+		var result = new java.util.LinkedHashMap<String, Object>();
+		result.put("postId", evidence.postId());
+		result.put("platform", evidence.platform());
+		result.put("authorId", evidence.authorId());
+		result.put("publishedAt", evidence.publishedAt().toString());
+		result.put("url", evidence.url());
+		result.put("source", evidence.source());
+		if (evidence.instrumentId() != null) result.put("instrumentId", evidence.instrumentId());
+		if (evidence.ticker() != null) result.put("ticker", evidence.ticker());
+		result.put("sentiment", evidence.sentiment());
+		result.put("excerpt", evidence.excerpt());
+		result.put("rationale", evidence.rationale());
 		return Map.copyOf(result);
 	}
 

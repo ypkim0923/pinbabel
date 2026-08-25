@@ -1,15 +1,27 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: pinbabel
   datasource:
-    url: jdbc:h2:mem:pinbabel;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: ${PINBABEL_DB_URL:jdbc:mysql://127.0.0.1:3306/pinbabel?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&useUnicode=true&characterEncoding=UTF-8}
+    username: ${PINBABEL_DB_USERNAME:pinbabel}
+    password: ${PINBABEL_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 5000
+      validation-timeout: 3000
   jpa:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        type:
+          preferred_boolean_jdbc_type: TINYINT
+          preferred_uuid_jdbc_type: CHAR
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
 

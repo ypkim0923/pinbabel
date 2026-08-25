@@ -23,7 +23,7 @@ REST, A2A, A2UI와 Template Engine SSR Adapter는 분석 유형별 공통 Applic
 | 입력 | `{ "account": "@handle" }` | `{ "operation": "analyzeRecentXCompanies", "account": "@handle" }` | `{ "account": "@handle" }` | server-owned profile ID + 일회성 실행 token |
 | 수집 범위 | 최대 10개, 답글·재게시 제외 | 동일 | 동일 | 동일 |
 | 비용 상한 | X 2회·LLM 1회 | 동일 artifact | 동일 data model | 동일 View Model |
-| 결과 영속화 | H2 versioned artifact | 동일 run/artifact | 동일 run/data model | 동일 run/artifact |
+| 결과 영속화 | MySQL versioned artifact | 동일 run/artifact | 동일 run/data model | 동일 run/artifact |
 
 최근 X 결과는 `recent_x_analysis_result`에 schema version과 JSON artifact로 저장한다. 실행 상태는 기존 `analysis_run`을 재사용하며, 네 Adapter가 각각 분석을 다시 구현하거나 외부 호출을 추가하지 않는다.
 

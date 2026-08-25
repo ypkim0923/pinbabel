@@ -2,6 +2,25 @@
 
 Pinbabel은 Embabel 1.5.0으로 주식 인플루언서의 공개 SNS 게시물을 분석하는 실험 프로젝트다. CLI에서는 재현 가능한 fixture 또는 X API의 공개 게시물을 대상으로 종목별 긍정·부정·중립·판단 불가 평가와 근거를 생성한다.
 
+## 로컬 MySQL 실행
+
+애플리케이션과 테스트는 기본적으로 Docker의 MySQL을 사용한다. 최초 한 번 `.env.example`을 `.env`로 복사해 로컬 비밀번호를 정한 뒤 MySQL을 시작한다. `.env`와 `data/`는 Git에서 제외된다.
+
+```bash
+cp .env.example .env
+docker compose up -d mysql
+docker compose ps
+```
+
+- 애플리케이션 DB: `pinbabel`
+- 테스트 DB: `pinbabel_test`
+- 영속 데이터: `data/mysql`
+- 로컬 접속: `127.0.0.1:3306` (포트는 `.env`의 `PINBABEL_DB_PORT`로 변경 가능)
+
+Liquibase가 두 schema의 테이블을 생성하고 Hibernate는 schema를 검증한다. `docker compose stop mysql` 또는 `docker compose down` 후에도 bind mount의 데이터는 유지된다. `data/mysql`을 삭제하면 로컬 데이터가 복구되지 않으므로 필요한 경우 먼저 백업한다.
+
+IntelliJ에서는 프로젝트 루트를 Working directory로 두고 `PinbabelApplication.main()`을 실행하면 `application.yaml`이 루트의 `.env`를 읽어 같은 MySQL에 연결한다. 테스트 실행 전에도 MySQL 컨테이너가 healthy 상태여야 한다.
+
 ## Thymeleaf SSR 실행
 
 외부 호출 없이 화면 전체 흐름을 확인하려면 다음 profile로 실행한다.
@@ -69,7 +88,7 @@ pinbabel-evaluation --id <pinbabel-evaluate 결과의 evaluationRunId>
 - `pinbabel-runs`는 현재 프로세스에서 생성된 최신 실행 20건을 보여준다.
 - `pinbabel-run --id`는 안전하게 선별된 Embabel 이벤트와 최종 보고서를 sequence 순서로 보여준다.
 - `pinbabel-evaluate`는 버전이 고정된 Golden Dataset으로 현재 모델과 prompt를 실제 실행해 종목 F1, sentiment 정확도, 근거 recall을 계산한다.
-- `pinbabel-evaluations`와 `pinbabel-evaluation --id`는 H2에 저장된 최근 평가와 case별 불일치 및 원본 `analysisRunId`를 보여준다.
+- `pinbabel-evaluations`와 `pinbabel-evaluation --id`는 MySQL에 저장된 최근 평가와 case별 불일치 및 원본 `analysisRunId`를 보여준다.
 - 빈 입력과 과도하게 긴 입력은 Embabel 실행 전에 거절하며, 주식 인플루언서 게시물 분석 범위를 벗어난 요청도 `REJECTED`로 종료한다.
 
 ## 실행 기록 정책
@@ -86,9 +105,11 @@ curl -sS -X POST http://127.0.0.1:8080/api/v1/x-influencer-analyses \
 curl -sS http://127.0.0.1:8080/api/v1/x-influencer-analyses/<runId>
 ```
 
-A2A는 `message/send`의 DataPart에 `operation=analyzeRecentXCompanies`와 `account`를 전달하며, A2UI는 `/a2ui/v0.9/x-influencer-analyses`에서 NDJSON snapshot을 제공한다. REST, A2A, A2UI와 Thymeleaf SSR은 동일한 비동기 Port와 H2 결과 artifact를 사용한다.
+A2A는 `message/send`의 DataPart에 `operation=analyzeRecentXCompanies`와 `account`를 전달하며, A2UI는 `/a2ui/v0.9/x-influencer-analyses`에서 NDJSON snapshot을 제공한다. REST, A2A, A2UI와 Thymeleaf SSR은 동일한 비동기 Port와 MySQL 결과 artifact를 사용한다.
 
-실행 기록은 H2 인메모리 DB에 저장되므로 애플리케이션을 종료하거나 재시작하면 사라진다. 스키마는 Liquibase가 생성하고 Hibernate는 이를 검증한다.
+Postman에서 A2UI와 Embabel A2A를 직접 확인하려면 `postman/Pinbabel-A2UI.postman_collection.json`과 `postman/Pinbabel-Local.postman_environment.json`을 가져온다. Fixture 호출과 실제 X 호출의 실행 순서 및 유료 호출 보호 방법은 `postman/README.md`에 정리되어 있다.
+
+실행 기록과 평가 결과는 MySQL에 저장되어 애플리케이션을 재시작해도 유지된다. 스키마는 Liquibase가 생성하고 Hibernate는 이를 검증한다.
 
 Golden Dataset은 `src/main/resources/fixtures/influenceranalysis/golden-dataset-v1.json`에 있으며 fixture 입력과 기대 종목, sentiment, 근거 post ID만 보존한다. 평가 case마다 일반 분석 실행 기록도 하나 생성되므로 `pinbabel-run --id`로 Embabel trace를 이어서 확인할 수 있다.
 

@@ -16,6 +16,7 @@ import com.ypkim.pinbabel.influenceranalysis.application.port.out.analysisrun.An
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -84,12 +85,15 @@ class AnalysisRunPersistenceAdapterTest {
 		var columns = jdbcClient.sql("""
 			select column_name
 			from information_schema.columns
-			where table_name = 'ANALYSIS_RUN_EVENT'
-			""").query(String.class).list();
+			where table_schema = database()
+			  and table_name = 'analysis_run_event'
+			""").query(String.class).list().stream()
+			.map(column -> column.toLowerCase(Locale.ROOT))
+			.toList();
 
 		assertThat(columns).containsExactlyInAnyOrder(
-			"RUN_ID", "EVENT_SEQUENCE", "EVENT_TYPE", "OCCURRED_AT", "PROCESS_ID",
-			"ACTION_NAME", "TOOL_NAME", "MODEL_NAME", "PROVIDER_NAME", "DURATION_MS", "SUCCESSFUL"
+			"run_id", "event_sequence", "event_type", "occurred_at", "process_id",
+			"action_name", "tool_name", "model_name", "provider_name", "duration_ms", "successful"
 		);
 	}
 

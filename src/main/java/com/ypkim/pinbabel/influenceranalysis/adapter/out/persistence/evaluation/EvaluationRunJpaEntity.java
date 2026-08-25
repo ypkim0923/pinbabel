@@ -51,7 +51,7 @@ class EvaluationRunJpaEntity {
 	@Column(name = "result_schema_version", nullable = false)
 	private int resultSchemaVersion;
 	@Lob
-	@Column(name = "case_results_json", nullable = false)
+	@Column(name = "case_results_json", nullable = false, length = Integer.MAX_VALUE)
 	private String caseResultsJson;
 
 	protected EvaluationRunJpaEntity() {

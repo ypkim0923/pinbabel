@@ -61,7 +61,7 @@ pinbabel-evaluations
 pinbabel-evaluation --id <pinbabel-evaluate 결과의 evaluationRunId>
 ```
 
-`pinbabel-runs`는 현재 프로세스의 최신 20건을, `pinbabel-run --id`는 안전하게 선별된 Embabel 이벤트와 최종 보고서를 보여준다. 실행 기록은 H2 인메모리 DB에만 있으므로 애플리케이션을 재시작하면 사라진다. Prompt, 응답, Tool 입력·출력과 credential은 실행 이벤트에 저장하지 않는다.
+`pinbabel-runs`는 MySQL에 저장된 최신 20건을, `pinbabel-run --id`는 안전하게 선별된 Embabel 이벤트와 최종 보고서를 보여준다. 실행 기록은 애플리케이션을 재시작해도 유지된다. Prompt, 응답, Tool 입력·출력과 credential은 실행 이벤트에 저장하지 않는다.
 
 `pinbabel-recommend-x-accounts`는 Embabel의 `recommend_x_stock_influencers` Tool과 동일한 Application Use Case를 사용한다. 현재는 사용자가 지정한 `@aleabitoreddit`만 반환하며 X API와 LLM을 호출하지 않는다. 따라서 실시간 인기 순위가 아니라 비용 없는 초기 실험용 목록이다.
 
@@ -71,7 +71,7 @@ pinbabel-evaluation --id <pinbabel-evaluate 결과의 evaluationRunId>
 
 성공 결과는 현재 프로세스에서 15분 동안 최대 20계정까지 보관한다. 같은 계정의 동시 요청은 하나의 실행으로 합쳐지고, 실패 결과는 반복 과금을 막기 위해 1분 동안 보관한다. 같은 계정으로 두 명령을 연속 실행하면 두 번째 명령은 `cacheHit=true`, `xApiRequestsThisCall=0`, `llmCallsThisCall=0`을 반환한다. `xApiRequestBudget`과 `llmCallBudget`은 호출 상한이며, 실패해 실제 호출 수를 확정할 수 없으면 `unknown`으로 표시한다. 애플리케이션 재시작 또는 캐시 만료 후에는 다시 과금 가능한 호출이 발생할 수 있다. 모든 출력에는 공개 SNS 자동 분석이며 투자 자문이 아니라는 고지가 포함된다.
 
-`pinbabel-evaluate`는 `golden-dataset-v1.json`의 모든 case를 기존 Embabel 분석 유스케이스로 순차 실행한다. 종목 탐지 precision/recall/F1, sentiment 정확도, 기대 근거 post ID recall과 exact match를 출력하며, 각 case의 `analysisRunId`로 실행 trace를 조회할 수 있다. `pinbabel-evaluations`는 최신 평가 20건, `pinbabel-evaluation --id`는 case별 점수와 불일치 사유를 보여준다. 평가 기록도 같은 H2 인메모리 DB에 저장된다.
+`pinbabel-evaluate`는 `golden-dataset-v1.json`의 모든 case를 기존 Embabel 분석 유스케이스로 순차 실행한다. 종목 탐지 precision/recall/F1, sentiment 정확도, 기대 근거 post ID recall과 exact match를 출력하며, 각 case의 `analysisRunId`로 실행 trace를 조회할 수 있다. `pinbabel-evaluations`는 최신 평가 20건, `pinbabel-evaluation --id`는 case별 점수와 불일치 사유를 보여준다. 평가 기록도 같은 MySQL에 저장된다.
 
 다음 Embabel Shell 명령으로 Agent 구성과 모델 상태를 확인할 수 있다.
 

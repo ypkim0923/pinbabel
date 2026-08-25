@@ -62,14 +62,14 @@ class AnalysisRunJpaEntity {
 	private BigDecimal costUsd;
 
 	@Lob
-	@Column(name = "models_json")
+	@Column(name = "models_json", length = Integer.MAX_VALUE)
 	private String modelsJson;
 
 	@Column(name = "report_schema_version")
 	private Integer reportSchemaVersion;
 
 	@Lob
-	@Column(name = "report_json")
+	@Column(name = "report_json", length = Integer.MAX_VALUE)
 	private String reportJson;
 
 	protected AnalysisRunJpaEntity() {

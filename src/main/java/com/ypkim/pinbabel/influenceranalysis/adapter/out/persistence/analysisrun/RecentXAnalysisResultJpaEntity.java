@@ -20,7 +20,7 @@ class RecentXAnalysisResultJpaEntity {
 	private int schemaVersion;
 
 	@Lob
-	@Column(name = "result_json", nullable = false)
+	@Column(name = "result_json", nullable = false, length = Integer.MAX_VALUE)
 	private String resultJson;
 
 	protected RecentXAnalysisResultJpaEntity() {

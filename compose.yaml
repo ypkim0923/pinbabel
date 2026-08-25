@@ -1,0 +1,28 @@
+name: pinbabel
+
+services:
+  mysql:
+    image: mysql:26.7.0
+    container_name: pinbabel-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: pinbabel
+      MYSQL_USER: pinbabel
+      MYSQL_PASSWORD: ${PINBABEL_DB_PASSWORD:?PINBABEL_DB_PASSWORD must be set in .env}
+      MYSQL_ROOT_PASSWORD: ${PINBABEL_DB_ROOT_PASSWORD:?PINBABEL_DB_ROOT_PASSWORD must be set in .env}
+    ports:
+      - "127.0.0.1:${PINBABEL_DB_PORT:-3306}:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --default-time-zone=+00:00
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_ROOT_PASSWORD mysqladmin ping --host=127.0.0.1 --user=root --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
+    stop_grace_period: 30s

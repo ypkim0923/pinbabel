@@ -240,6 +240,10 @@ gradle-app.setting
 
 # Local environment secrets
 .envrc
+/.env
+
+# Local Docker database data
+/data/
 *.swp
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,intellij+all,gradle,kotlin
